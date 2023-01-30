@@ -1,31 +1,29 @@
-import { GetServerSideProps, NextPageContext } from "next";
+import Auth from "@/components/Auth/Auth";
+import Chat from "@/components/Chat/Chat";
+import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function Home() {
   const { data: session } = useSession();
 
-  if (session) {
-    return (
-      <>
-        <img
-          src={session.user?.image as string}
-          alt="Picture of the author"
-          width={50}
-          height={50}
-        />
-        Signed in as {session.user?.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
+  const refetch = () => {};
 
+  // ts knows that data or session is of type Session from next-auth which has name, email, image
+  // to add more properties to it we need to modify Session interface
+  // the Session interface extends DefaultSession which has user properties and expires in
+  // we will create custom type decoration file for this in lib: next-auth.d.ts
+
+  // all the types we create in this file will be interpreted as types coming from next-auth itself
   return (
-    <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
-    </>
+    <div>
+      {session?.user.username ? (
+        <Chat />
+      ) : (
+        <Auth session={session} refetch={refetch} />
+      )}
+    </div>
   );
 }
 
@@ -35,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // if (!session) {
   //   return {
   //     redirect: {
-  //       destination: "/",
+  //       destination: "/auth",
   //       permanent: false,
   //     },
   //   };
