@@ -1,5 +1,9 @@
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
+// https://mui.com/material-ui/customization/theming/#themeprovider
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../mui/theme";
+import { CssBaseline } from "@mui/material";
 
 export default function App({
   Component,
@@ -7,7 +11,10 @@ export default function App({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
     </SessionProvider>
   );
 }

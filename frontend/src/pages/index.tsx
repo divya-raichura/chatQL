@@ -1,4 +1,7 @@
+import { GetServerSideProps, NextPageContext } from "next";
+import { getServerSession } from "next-auth";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export default function Home() {
   const { data: session } = useSession();
@@ -25,3 +28,22 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  // if (!session) {
+  //   return {
+  //     redirect: {
+  //       destination: "/",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
