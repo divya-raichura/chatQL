@@ -21,7 +21,7 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
     createUsernameVariables
   >(UserOperations.Mutations.CREATE_USERNAME);
 
-  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!username || username?.length < 3)
       return alert("Username must be at least 3 characters long");
@@ -44,7 +44,7 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
     >
       {session ? (
         <>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => handleSubmit(e)}>
             <Stack
               direction="column"
               justifyContent="center"

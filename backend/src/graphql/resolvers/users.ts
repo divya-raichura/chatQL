@@ -4,9 +4,9 @@ const userResolvers = {
   },
 
   Mutation: {
-    createUsername: () => {
-      console.log("createUsername");
-      return { success: true };
+    createUsername: (parent: any, args: { username: string }, context: any) => {
+      const { username } = args;
+      console.log("here is context", context);
     },
   },
 };

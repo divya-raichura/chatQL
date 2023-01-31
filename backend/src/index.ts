@@ -10,6 +10,8 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import typeDefs from "./graphql/type-defs/index";
 import resolvers from "./graphql/resolvers/index";
 import dotenv from "dotenv";
+import { getSession } from "next-auth/react";
+import { GraphQLContext } from "./util/types";
 
 const main = async () => {
   dotenv.config();
@@ -37,7 +39,7 @@ const main = async () => {
 
   const corsOptions = {
     origin: process.env.CLIENT_ORIGIN,
-    credentials: true,
+    credentials: true, // to allow server to accept auth headers
   };
 
   // Set up our Express middleware to handle CORS, body parsing,
@@ -49,7 +51,13 @@ const main = async () => {
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      // req obj contains auth headers that next will sent to context
+      context: async ({ req }): Promise<GraphQLContext> => {
+        // means we return a promise that resolves to a GraphQLContext, so context always has a session as we defined in types.ts(GraphQLContexts)
+        // what we return from here will be available in context in resolvers
+        const session = await getSession({ req });
+        return { session };
+      },
     })
   );
 
