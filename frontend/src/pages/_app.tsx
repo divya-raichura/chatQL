@@ -5,7 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../mui/theme";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
-import { client } from "@/graphql/apollo-client";
+import client from "@/graphql/apollo-client";
 
 export default function App({
   Component,

@@ -1,9 +1,12 @@
+import { createUsernameData, createUsernameVariables } from "@/util/types";
+import { useMutation } from "@apollo/client";
 import { Button, OutlinedInput, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import UserOperations from "../../graphql/operations/user";
 
 interface IAuthProps {
   session: Session | null;
@@ -13,15 +16,24 @@ interface IAuthProps {
 const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
   const [username, setUsername] = useState("");
 
-  const handleSubmit = () => {
+  const [createUsername, { data, loading, error }] = useMutation<
+    createUsernameData,
+    createUsernameVariables
+  >(UserOperations.Mutations.CREATE_USERNAME);
+
+  const handleSubmit = async (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (!username || username?.length < 3)
+      return alert("Username must be at least 3 characters long");
+
     try {
-      /**
-       * create username mutation to send username to GraphQL api
-       */
+      await createUsername({ variables: { username } });
     } catch (error) {
       console.log("onSubmit error", error);
     }
   };
+
+  console.log("here is the mutation responses", data, loading, error);
 
   return (
     <Box
@@ -30,27 +42,36 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
       alignItems="center"
       minHeight="100vh"
     >
-      <Stack
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        spacing={5}
-      >
-        {session ? (
-          <>
-            <Typography variant="h4">Create a Username</Typography>
-            <OutlinedInput
-              fullWidth
-              placeholder="Enter a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            ></OutlinedInput>
-            <Button fullWidth onClick={handleSubmit} variant="contained">
-              Save
-            </Button>
-          </>
-        ) : (
-          <>
+      {session ? (
+        <>
+          <form onSubmit={handleSubmit}>
+            <Stack
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
+              <Typography variant="h4">Create a Username</Typography>
+              <OutlinedInput
+                fullWidth
+                placeholder="Enter a username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              ></OutlinedInput>
+              <Button fullWidth type="submit" variant="contained">
+                Save
+              </Button>
+            </Stack>
+          </form>
+        </>
+      ) : (
+        <>
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={5}
+          >
             <Typography variant="h4">ChatQL</Typography>
             <Button
               onClick={() => signIn("google")}
@@ -60,9 +81,9 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
             >
               Continue with Google
             </Button>
-          </>
-        )}
-      </Stack>
+          </Stack>
+        </>
+      )}
     </Box>
   );
 };

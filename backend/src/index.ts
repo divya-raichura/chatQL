@@ -9,8 +9,11 @@ import bodyParser from "body-parser";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import typeDefs from "./graphql/type-defs/index";
 import resolvers from "./graphql/resolvers/index";
+import dotenv from "dotenv";
 
 const main = async () => {
+  dotenv.config();
+
   const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
@@ -26,16 +29,22 @@ const main = async () => {
   // for our httpServer.
   const server = new ApolloServer({
     schema,
+    csrfPrevention: true,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   // Ensure we wait for our server to start
   await server.start();
 
+  const corsOptions = {
+    origin: process.env.CLIENT_ORIGIN,
+    credentials: true,
+  };
+
   // Set up our Express middleware to handle CORS, body parsing,
   // and our expressMiddleware function.
   app.use(
     "/",
-    cors<cors.CorsRequest>(),
+    cors<cors.CorsRequest>(corsOptions),
     bodyParser.json(),
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options

@@ -4,7 +4,10 @@ const userResolvers = {
   },
 
   Mutation: {
-    createUsername: () => {},
+    createUsername: () => {
+      console.log("createUsername");
+      return { success: true };
+    },
   },
 };
 
