@@ -27,6 +27,8 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
       return alert("Username must be at least 3 characters long");
 
     try {
+      console.log("HERE IS THE SESSION IN FRONTEND", session);
+
       await createUsername({ variables: { username } });
     } catch (error) {
       console.log("onSubmit error", error);
@@ -75,7 +77,7 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
             <Typography variant="h4">ChatQL</Typography>
             <Button
               onClick={() => signIn("google")}
-              size="small"
+              size="medium"
               variant="contained"
               startIcon={<GoogleIcon />}
             >

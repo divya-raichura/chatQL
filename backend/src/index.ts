@@ -11,7 +11,8 @@ import typeDefs from "./graphql/type-defs/index";
 import resolvers from "./graphql/resolvers/index";
 import dotenv from "dotenv";
 import { getSession } from "next-auth/react";
-import { GraphQLContext } from "./util/types";
+import { GraphQLContext, Session } from "./util/types";
+import { PrismaClient } from "@prisma/client";
 
 const main = async () => {
   dotenv.config();
@@ -26,6 +27,9 @@ const main = async () => {
   // Below, we tell Apollo Server to "drain" this httpServer,
   // enabling our servers to shut down gracefully.
   const httpServer = http.createServer(app);
+
+  // Context parameters
+  const prisma = new PrismaClient();
 
   // Same ApolloServer initialization, plus the drain plugin
   // for our httpServer.
@@ -55,8 +59,8 @@ const main = async () => {
       context: async ({ req }): Promise<GraphQLContext> => {
         // means we return a promise that resolves to a GraphQLContext, so context always has a session as we defined in types.ts(GraphQLContexts)
         // what we return from here will be available in context in resolvers
-        const session = await getSession({ req });
-        return { session };
+        const session = await getSession({ req }) as Session;
+        return { session, prisma };
       },
     })
   );
