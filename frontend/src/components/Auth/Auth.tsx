@@ -6,36 +6,58 @@ import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import UserOperations from "../../graphql/operations/user";
 
 interface IAuthProps {
   session: Session | null;
-  refetch: () => void;
 }
 
-const Auth: React.FunctionComponent<IAuthProps> = ({ session, refetch }) => {
+const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
   const [username, setUsername] = useState("");
 
-  const [createUsername, { data, loading, error }] = useMutation<
+  const [createUsername, { loading, error }] = useMutation<
     createUsernameData,
     createUsernameVariables
   >(UserOperations.Mutations.CREATE_USERNAME);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!username || username?.length < 3)
-      return alert("Username must be at least 3 characters long");
+    if (!username || username?.length < 3) {
+      toast.error("Username must be at least 3 characters long");
+      return;
+    }
 
     try {
       console.log("HERE IS THE SESSION IN FRONTEND", session);
 
-      await createUsername({ variables: { username } });
-    } catch (error) {
+      let { data } = await createUsername({ variables: { username } });
+
+      console.log(data);
+
+      if (!data?.createUsername) {
+        throw new Error();
+      } else if (
+        data?.createUsername?.error ||
+        !data?.createUsername?.success
+      ) {
+        const {
+          createUsername: { error },
+        } = data;
+        throw new Error(error);
+      }
+
+      if (data.createUsername.success) {
+        toast.success("Username created successfully 🚀");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error: any) {
+      toast.error(error?.message);
       console.log("onSubmit error", error);
     }
   };
-
-  console.log("here is the mutation responses", data, loading, error);
 
   return (
     <Box

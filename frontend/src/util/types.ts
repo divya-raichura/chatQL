@@ -1,6 +1,8 @@
 export interface createUsernameData {
-  success: Boolean;
-  error?: String;
+  createUsername: {
+    success: boolean;
+    error: string;
+  };
 }
 
 export interface createUsernameVariables {

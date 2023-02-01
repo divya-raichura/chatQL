@@ -8,8 +8,6 @@ import { authOptions } from "./api/auth/[...nextauth]";
 export default function Home() {
   const { data: session } = useSession();
 
-  const refetch = () => {};
-
   // ts knows that data or session is of type Session from next-auth which has name, email, image
   // to add more properties to it we need to modify Session interface
   // the Session interface extends DefaultSession which has user properties and expires in
@@ -17,13 +15,7 @@ export default function Home() {
 
   // all the types we create in this file will be interpreted as types coming from next-auth itself
   return (
-    <div>
-      {session?.user.username ? (
-        <Chat />
-      ) : (
-        <Auth session={session} refetch={refetch} />
-      )}
-    </div>
+    <div>{session?.user.username ? <Chat /> : <Auth session={session} />}</div>
   );
 }
 

@@ -13,5 +13,13 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
+  callbacks: {
+    async session({ session, token, user }) {
+      // this object is blend of the session user and database user
+      return { ...session, user: { ...session.user, ...user } };
+      // so, now session will have this mix object and in backend too when we use getSession(),
+      // we will get this mix object
+    },
+  },
 };
 export default NextAuth(authOptions);

@@ -13,7 +13,6 @@ const userResolvers = {
     ): Promise<CreateUsernameResponse> => {
       const { username } = args;
       const { session, prisma } = context;
-      console.log("here is context", context);
 
       if (!session?.user) {
         return {
@@ -52,7 +51,7 @@ const userResolvers = {
         return {
           success: true,
         };
-      } catch (error) {
+      } catch (error: any) {
         console.log("create username error");
 
         return {

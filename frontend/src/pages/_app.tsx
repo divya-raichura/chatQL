@@ -6,6 +6,7 @@ import { theme } from "../mui/theme";
 import { CssBaseline } from "@mui/material";
 import { ApolloProvider } from "@apollo/client";
 import client from "@/graphql/apollo-client";
+import { Toaster } from "react-hot-toast";
 
 export default function App({
   Component,
@@ -17,6 +18,7 @@ export default function App({
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Component {...pageProps} />
+          <Toaster />
         </ThemeProvider>
       </SessionProvider>
     </ApolloProvider>
