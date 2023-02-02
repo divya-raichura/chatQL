@@ -1,8 +1,19 @@
 import { CreateUsernameResponse, GraphQLContext } from "../../util/types";
+import { GraphQLError } from "graphql";
 
 const userResolvers = {
   Query: {
     searchUsers: () => {},
+
+    getUsers: (parent: any, args: any, context: GraphQLContext) => {
+      const { prisma, session } = context;
+
+      if (!session?.user) {
+        throw new GraphQLError("You must be logged in to view users");
+      }
+
+      return prisma.user.findMany();
+    },
   },
 
   Mutation: {

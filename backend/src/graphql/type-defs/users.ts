@@ -8,6 +8,8 @@ const userTypeDefs = gql`
 
   type Query {
     searchUsers(username: String!): [User]!
+    # getUsers(): [User]!
+    getUsers: String!
   }
 
   type Mutation {

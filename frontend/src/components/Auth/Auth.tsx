@@ -1,11 +1,13 @@
 import { createUsernameData, createUsernameVariables } from "@/util/types";
 import { useMutation } from "@apollo/client";
+import { LoadingButton } from "@mui/lab";
 import { Button, OutlinedInput, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { Session } from "next-auth";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import SaveIcon from "@mui/icons-material/Save";
 import { toast } from "react-hot-toast";
 import UserOperations from "../../graphql/operations/user";
 
@@ -51,7 +53,7 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
         toast.success("Username created successfully 🚀");
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 500);
       }
     } catch (error: any) {
       toast.error(error?.message);
@@ -82,9 +84,16 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               ></OutlinedInput>
-              <Button fullWidth type="submit" variant="contained">
-                Save
-              </Button>
+              <LoadingButton
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                fullWidth
+                type="submit"
+                variant="contained"
+              >
+                <span>Save</span>
+              </LoadingButton>
             </Stack>
           </form>
         </>

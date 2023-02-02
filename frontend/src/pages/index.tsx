@@ -15,7 +15,13 @@ export default function Home() {
 
   // all the types we create in this file will be interpreted as types coming from next-auth itself
   return (
-    <div>{session?.user.username ? <Chat /> : <Auth session={session} />}</div>
+    <div>
+      {session?.user.username ? (
+        <Chat session={session} />
+      ) : (
+        <Auth session={session} />
+      )}
+    </div>
   );
 }
 
