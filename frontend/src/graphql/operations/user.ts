@@ -2,17 +2,14 @@ import { gql } from "@apollo/client";
 
 export default {
   Queries: {
-    // GET_USERS: gql`
-    //   query GetUsers {
-    //     getUser {
-    //       id
-    //       username
-    //       email
-    //       createdAt
-    //       updatedAt
-    //     }
-    //   }
-    // `,
+    GET_USERS: gql`
+      query GetUsers($username: String!) {
+        getUsers(username: $username) {
+          id
+          username
+        }
+      }
+    `,
   },
 
   Mutations: {
