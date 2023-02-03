@@ -107,7 +107,37 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         />
       </Box>
 
-      
+      {participants.length > 0 && (
+        <Box sx={{ flexGrow: 1, mb: 2 }}>
+          <Grid gridAutoColumns="1fr" container spacing={2}>
+            {participants.map((user) => (
+              <Grid
+                onClick={() => removeParticipant(user)}
+                key={user.id}
+                xs={3}
+                sx={{
+                  cursor: "pointer",
+                }}
+              >
+                <Item sx={{ ":hover": { backgroundColor: "#28323d" } }}>
+                  {user.username}
+                </Item>
+              </Grid>
+            ))}
+          </Grid>
+          <Button
+            fullWidth
+            sx={{
+              backgroundColor: "#33bfff",
+              mt: 1,
+              ":hover": { backgroundColor: "#2196f3" },
+            }}
+            variant="outlined"
+          >
+            Create Conversation
+          </Button>
+        </Box>
+      )}
 
       {loading && <Typography>Loading...</Typography>}
 
