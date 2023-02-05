@@ -1,33 +1,28 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { Session } from "next-auth";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useRef, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
 import GQL from "../../../graphql/operations/user";
 import React from "react";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Grid from "@mui/material/Unstable_Grid2";
 import { toast } from "react-hot-toast";
+import LinearProgress from "@mui/material/LinearProgress";
+import {
+  SearchedUser,
+  searchUserData,
+  searchUserVariables,
+} from "@/util/types";
+import SearchList from "./SearchList";
+import Participants from "./Participants";
 
 interface IConversationsListProps {
   session: Session;
 }
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#424242" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-  wordWrap: "break-word",
-}));
-
 const boxSX = {
   "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "#3c3c3c",
   },
 };
 
@@ -35,10 +30,11 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   session,
 }) => {
   const [search, setSearch] = useState<string>("");
-  const [getUsers, { data, loading }] = useLazyQuery(GQL.Queries.GET_USERS);
-  const [participants, addParticipants] = useState<
-    Array<{ username: string; id: string }>
-  >([]);
+  const [getUsers, { data, loading }] = useLazyQuery<
+    searchUserData,
+    searchUserVariables
+  >(GQL.Queries.GET_USERS);
+  const [participants, addParticipants] = useState<Array<SearchedUser>>([]);
 
   const ref = useRef<HTMLInputElement>(null);
   const focusRef = () => ref.current?.focus();
@@ -47,18 +43,16 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
     setSearch(event.target.value);
   };
 
-  const addParticipantsHandler = (user: { username: string; id: string }) => {
+  const addParticipantsHandler = (user: SearchedUser) => {
     if (participants.find((p) => p.id === user.id)) {
       toast.error("User already added");
       return;
     }
-    addParticipants((prev) => [
-      ...prev,
-      { username: user.username, id: user.id },
-    ]);
+    addParticipants((prev) => [...prev, user]);
+    setSearch("");
   };
 
-  const removeParticipant = (user: { username: string; id: string }) => {
+  const removeParticipant = (user: SearchedUser) => {
     addParticipants((prev) => prev.filter((p) => p.id !== user.id));
   };
 
@@ -73,10 +67,11 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   return (
     <Box width="100%">
       <Box
+        boxShadow={3}
         sx={boxSX}
         height={40}
-        bgcolor="rgba(255, 255, 255, 0.15)"
-        borderRadius={4}
+        bgcolor="rgba(60,60,60,0.7)"
+        borderRadius={3}
         mb={2}
         display="flex"
         alignItems="center"
@@ -108,80 +103,20 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
       </Box>
 
       {participants.length > 0 && (
-        <Box sx={{ flexGrow: 1, mb: 2 }}>
-          <Grid gridAutoColumns="1fr" container spacing={2}>
-            {participants.map((user) => (
-              <Grid
-                onClick={() => removeParticipant(user)}
-                key={user.id}
-                xs={3}
-                sx={{
-                  cursor: "pointer",
-                }}
-              >
-                <Item sx={{ ":hover": { backgroundColor: "#28323d" } }}>
-                  {user.username}
-                </Item>
-              </Grid>
-            ))}
-          </Grid>
-          <Button
-            fullWidth
-            sx={{
-              backgroundColor: "#33bfff",
-              mt: 1,
-              ":hover": { backgroundColor: "#2196f3" },
-            }}
-            variant="outlined"
-          >
-            Create Conversation
-          </Button>
-        </Box>
+        <Participants
+          participants={participants}
+          removeParticipant={removeParticipant}
+        />
       )}
 
-      {loading && <Typography>Loading...</Typography>}
+      {loading && <LinearProgress />}
 
-      {search && data && data.getUsers && (
-        <Box>
-          {data.getUsers.map((user: any) => (
-            <Box
-              key={user.id}
-              sx={{
-                ":hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-                cursor: "pointer",
-              }}
-              height={50}
-              bgcolor="rgba(255, 255, 255, 0.05)"
-              borderRadius={4}
-              mb={2}
-              display="flex"
-              alignItems="center"
-              onClick={() => addParticipantsHandler(user)}
-            >
-              <Box
-                sx={{
-                  color: "action.active",
-                  mr: 3,
-                  ml: 2,
-                  my: 0.5,
-                }}
-                display="flex"
-              >
-                <AccountCircleIcon sx={{ mr: 1 }} />
-                {user.username
-                  .split(search)
-                  .map((text: string, index: number) => (
-                    <React.Fragment key={index}>
-                      {index > 0 && (
-                        <span style={{ color: "aqua" }}>{search}</span>
-                      )}
-                      {text}
-                    </React.Fragment>
-                  ))}
-              </Box>
-            </Box>
-          ))}
-        </Box>
+      {data && (
+        <SearchList
+          search={search}
+          data={data}
+          addParticipantsHandler={addParticipantsHandler}
+        />
       )}
     </Box>
   );
