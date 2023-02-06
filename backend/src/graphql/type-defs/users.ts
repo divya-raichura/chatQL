@@ -9,7 +9,6 @@ const userTypeDefs = gql`
   }
 
   type Query {
-    searchUsers(username: String!): [SearchedUser]!
     getUsers(username: String!): [SearchedUser]!
   }
 

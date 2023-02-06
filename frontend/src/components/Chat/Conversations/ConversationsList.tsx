@@ -49,7 +49,7 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
       return;
     }
     addParticipants((prev) => [...prev, user]);
-    setSearch("");
+    // setSearch("");
   };
 
   const removeParticipant = (user: SearchedUser) => {
@@ -106,6 +106,7 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         <Participants
           participants={participants}
           removeParticipant={removeParticipant}
+          session={session}
         />
       )}
 

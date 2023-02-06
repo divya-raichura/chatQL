@@ -1,3 +1,6 @@
+/**
+ * User related types
+ */
 export interface createUsernameData {
   createUsername: {
     success: boolean;
@@ -20,4 +23,18 @@ export interface searchUserData {
 export interface SearchedUser {
   id: string;
   username: String;
+}
+
+/**
+ * Conversation related types
+ */
+
+export interface createConversationData {
+  createConversation: {
+    conversationId: string;
+  };
+}
+
+export interface createConversationVariables {
+  participantIds: Array<string>;
 }

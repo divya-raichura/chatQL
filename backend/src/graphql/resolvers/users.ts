@@ -4,8 +4,6 @@ import { User } from "@prisma/client";
 
 const userResolvers = {
   Query: {
-    searchUsers: () => {},
-
     getUsers: async (
       parent: any,
       args: { username: string },
