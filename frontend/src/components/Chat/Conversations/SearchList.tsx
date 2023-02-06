@@ -31,7 +31,7 @@ const SearchList: React.FunctionComponent<ISearchListProps> = ({
               mb={2}
               display="flex"
               alignItems="center"
-              boxShadow={2}
+              boxShadow={8}
               onClick={() => addParticipantsHandler(user)}
             >
               <Box
@@ -44,17 +44,29 @@ const SearchList: React.FunctionComponent<ISearchListProps> = ({
                 display="flex"
                 alignItems="center"
               >
+                {/* icon */}
                 <AccountCircleIcon sx={{ mr: 1 }} />
-                {user.username
-                  .split(search)
-                  .map((text: string, index: number) => (
-                    <React.Fragment key={index}>
-                      {index > 0 && (
-                        <span style={{ color: "aqua" }}>{search}</span>
-                      )}
-                      {text}
-                    </React.Fragment>
-                  ))}
+
+                {/* highlight text */}
+                {user.username.split(search).map((text, index) => (
+                  <React.Fragment key={index}>
+                    {text}
+                    {index !== user.username.split(search).length - 1 && (
+                      <Box
+                        component="span"
+                        sx={{
+                          color: "action.active",
+                          fontWeight: "bold",
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                          borderRadius: 4,
+                          px: 0.5,
+                        }}
+                      >
+                        {search}
+                      </Box>
+                    )}
+                  </React.Fragment>
+                ))}
               </Box>
             </Box>
           ))}

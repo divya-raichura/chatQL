@@ -3,6 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { SearchedUser } from "@/util/types";
+import { toast } from "react-hot-toast";
 
 interface IParticipantsProps {
   participants: Array<SearchedUser>;
@@ -22,6 +23,15 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
   participants,
   removeParticipant,
 }) => {
+  const createConversationHandler = async () => {
+    try {
+      console.log("Create Conversation Mutation");
+    } catch (error: any) {
+      console.log("onCreateConversation error", error);
+      toast.error(error?.message);
+    }
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 1, mb: 2 }}>
@@ -49,6 +59,7 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
             ":hover": { backgroundColor: "#2196f3" },
           }}
           variant="outlined"
+          onClick={() => createConversationHandler()}
         >
           Create Conversation
         </Button>
