@@ -29,7 +29,7 @@ const main = async () => {
   const httpServer = http.createServer(app);
 
   // Context parameters
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ log: ["query"] });
 
   // Same ApolloServer initialization, plus the drain plugin
   // for our httpServer.
