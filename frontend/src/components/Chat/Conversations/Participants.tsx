@@ -11,12 +11,15 @@ import {
 import { toast } from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import ConversationOperations from "../../../graphql/operations/conversation";
-import LinearProgress from "@mui/material/LinearProgress";
 import { Session } from "next-auth";
+import { useRouter } from "next/router";
+import { Dispatch, SetStateAction } from "react";
 
 interface IParticipantsProps {
   participants: Array<SearchedUser>;
+  addParticipants: Dispatch<SetStateAction<SearchedUser[]>>;
   removeParticipant: (user: SearchedUser) => void;
+  setSearch: Dispatch<SetStateAction<string>>;
   session: Session;
 }
 
@@ -31,6 +34,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Participants: React.FunctionComponent<IParticipantsProps> = ({
   participants,
+  setSearch,
+  addParticipants,
   session,
   removeParticipant,
 }) => {
@@ -38,6 +43,8 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
     useMutation<createConversationData, createConversationVariables>(
       ConversationOperations.Mutations.CREATE_CONVERSATION
     );
+
+  const router = useRouter();
 
   const userId = session.user.id;
 
@@ -50,6 +57,20 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
           participantIds: [userId, ...participants.map((p) => p.id)],
         },
       });
+
+      if (!data?.createConversation) {
+        throw new Error("Error creating conversation");
+      }
+
+      const { conversationId } = data.createConversation;
+
+      router.push({ query: { conversationId } });
+
+      /**
+       * clear state
+       */
+      addParticipants([]);
+      setSearch("");
 
       console.log(
         "here is participant frontend data recieved from backend",

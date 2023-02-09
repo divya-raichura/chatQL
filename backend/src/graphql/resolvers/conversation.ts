@@ -1,5 +1,6 @@
 import { GraphQLContext } from "../../util/types";
 import { GraphQLError } from "graphql";
+import { Prisma } from "@prisma/client";
 
 const resolvers = {
   Mutation: {
@@ -7,9 +8,8 @@ const resolvers = {
       _: any,
       args: { participantIds: Array<string> },
       context: GraphQLContext
-    ) => {
+    ): Promise<{ conversationId: string }> => {
       // create a new conversation
-      console.log("createConversation resolver", args);
       const { session, prisma } = context;
 
       if (!session) {
@@ -38,32 +38,53 @@ const resolvers = {
             },
           },
 
-          include: {
-            Participants: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-            latestMessage: {
-              include: {
-                sender: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
+          include: conversationPopulated,
         });
-      } catch (error) {}
+
+        /**
+         * we write "include" so as to emit an event to the client later using pubsub
+         * */
+
+        return {
+          conversationId: conversation.id,
+        };
+      } catch (error) {
+        console.log("conversation create error", error);
+        throw new GraphQLError("Error creating conversation");
+      }
     },
   },
 };
+
+/**
+ * prisma validator
+ *  */
+
+export const ParticipantPopulated =
+  Prisma.validator<Prisma.UserConversationInclude>()({
+    user: {
+      select: {
+        id: true,
+        username: true,
+      },
+    },
+  });
+
+export const conversationPopulated =
+  Prisma.validator<Prisma.ConversationInclude>()({
+    Participants: {
+      include: ParticipantPopulated,
+    },
+    latestMessage: {
+      include: {
+        sender: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    },
+  });
 
 export default resolvers;

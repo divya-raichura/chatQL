@@ -105,6 +105,8 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
       {participants.length > 0 && (
         <Participants
           participants={participants}
+          setSearch={setSearch}
+          addParticipants={addParticipants}
           removeParticipant={removeParticipant}
           session={session}
         />
