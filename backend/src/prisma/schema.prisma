@@ -64,7 +64,7 @@ model Conversation {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
   latestMessageId String?            @unique @db.ObjectId
-  // Message? because initially there is no message when the conversation is created
+  // latestMessage: Message? because initially there is no message when the conversation is created
   latestMessage   Message?           @relation(name: "latestMessage", fields: [latestMessageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Participants    UserConversation[]
   Message         Message[]

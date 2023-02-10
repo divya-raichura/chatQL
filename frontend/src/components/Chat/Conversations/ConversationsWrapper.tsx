@@ -1,6 +1,8 @@
+import { useQuery } from "@apollo/client";
 import { Box } from "@mui/system";
 import { Session } from "next-auth";
 import ConversationsList from "./ConversationsList";
+import Query from "../../../graphql/operations/conversation";
 
 interface IConversationsWrapperProps {
   session: Session;
@@ -9,6 +11,12 @@ interface IConversationsWrapperProps {
 const ConversationsWrapper: React.FunctionComponent<
   IConversationsWrapperProps
 > = ({ session }) => {
+  // const {
+  //   data: conversationsData,
+  //   loading: conversationsLoading,
+  //   error: conversationsError,
+  // } = useQuery<>(Query.Queries.GET_CONVERSATIONS);
+
   return (
     <Box
       width="100%"
