@@ -9,15 +9,18 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
+  Conversation,
   SearchedUser,
   searchUserData,
   searchUserVariables,
 } from "@/util/types";
 import SearchList from "./SearchList";
 import Participants from "./Participants";
+import ListItem from "./ListItem";
 
 interface IConversationsListProps {
   session: Session;
+  getConversations?: Array<Conversation>;
 }
 
 const boxSX = {
@@ -28,6 +31,7 @@ const boxSX = {
 
 const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   session,
+  getConversations,
 }) => {
   const [search, setSearch] = useState<string>("");
   const [getUsers, { data, loading }] = useLazyQuery<
@@ -121,6 +125,29 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
           addParticipantsHandler={addParticipantsHandler}
         />
       )}
+
+      {!search &&
+        getConversations?.map((conversation) => (
+          <Box
+            key={conversation.id}
+            boxShadow={3}
+            sx={{ cursor: "pointer", ...boxSX }}
+            height={50}
+            bgcolor="rgba(255, 255, 255, 0.07)"
+            borderRadius={4}
+            mb={2}
+            display="flex"
+            alignItems="center"
+          >
+            <ListItem conversation={conversation} />
+          </Box>
+        ))}
+
+      {/* add conversations to search */}
+      {/* 
+      {search && getConversations?.filter((item) => {
+
+      })} */}
     </Box>
   );
 };

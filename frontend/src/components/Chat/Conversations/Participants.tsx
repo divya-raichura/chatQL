@@ -84,7 +84,7 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
 
   return (
     <>
-      <Box sx={{ flexGrow: 1, mb: 2 }}>
+      <Box sx={{ flexGrow: 1, mb: 2 }} zIndex={100}>
         <Grid gridAutoColumns="1fr" container spacing={2}>
           {participants.map((user) => (
             <Grid
