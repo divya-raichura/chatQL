@@ -3,7 +3,8 @@ import { Box } from "@mui/system";
 import { Session } from "next-auth";
 import ConversationsList from "./ConversationsList";
 import Query from "../../../graphql/operations/conversation";
-import { getConversationsData } from "../../../util/types";
+import { getConversationsData, Conversation } from "../../../util/types";
+import { useEffect } from "react";
 interface IConversationsWrapperProps {
   session: Session;
 }
@@ -15,9 +16,30 @@ const ConversationsWrapper: React.FunctionComponent<
     data: conversationsData,
     loading: conversationsLoading,
     error: conversationsError,
+    subscribeToMore: conversationsSubscribeToMore,
   } = useQuery<getConversationsData, null>(Query.Queries.GET_CONVERSATIONS);
 
-  console.log(conversationsData);
+  const subscribeToNewConversations = () => {
+    conversationsSubscribeToMore({
+      document: Query.Subscriptions.CONVERSATION_CREATED,
+      updateQuery: (
+        prev,
+        {
+          subscriptionData,
+        }: { subscriptionData: { data: { conversationCreated: Conversation } } }
+      ) => {
+        if (!subscriptionData.data) return prev;
+        const newConversation = subscriptionData.data.conversationCreated;
+        return Object.assign({}, prev, {
+          getConversations: [newConversation, ...prev.getConversations],
+        });
+      },
+    });
+  };
+
+  useEffect(() => {
+    subscribeToNewConversations();
+  }, []);
 
   // if (conversationsLoading) {
   //   return (
@@ -32,7 +54,7 @@ const ConversationsWrapper: React.FunctionComponent<
   //       {/* Skeleton Loader */}
   //     </Box>
   //   );
-  // }  
+  // }
 
   return (
     <Box

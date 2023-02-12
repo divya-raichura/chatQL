@@ -3,16 +3,21 @@ import gql from "graphql-tag";
 const conversationTypeDefs = gql`
   scalar Date
 
+  type Query {
+    getConversations: [Conversation]
+  }
+
   type Mutation {
     createConversation(participantIds: [String]!): createConversationResponse
   }
 
-  type createConversationResponse {
-    conversationId: String
+  type Subscription {
+    conversationCreated: Conversation
+    # conversationUpdated: Conversation
   }
 
-  type Query {
-    getConversations: [Conversation]
+  type createConversationResponse {
+    conversationId: String
   }
 
   type Conversation {

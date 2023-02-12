@@ -40,7 +40,7 @@ const resolvers = {
       context: GraphQLContext
     ): Promise<{ conversationId: string }> => {
       // create a new conversation
-      const { session, prisma } = context;
+      const { session, prisma, pubsub } = context;
 
       if (!session) {
         throw new GraphQLError("Not authenticated");
@@ -73,7 +73,13 @@ const resolvers = {
 
         /**
          * we write "include" so as to emit an event to the client later using pubsub
+         * we will use pubsub instance to emit conversation created event which the new subscription
+         * that we created in typedef will subscribe/listen to
          * */
+
+        pubsub.publish("CONVERSATION_CREATED", {
+          conversationCreated: conversation,
+        });
 
         return {
           conversationId: conversation.id,
@@ -83,6 +89,21 @@ const resolvers = {
         throw new GraphQLError("Error creating conversation");
       }
     },
+  },
+
+  Subscription: {
+    conversationCreated: {
+      subscribe: (_: any, __: any, context: GraphQLContext) => {
+        const { pubsub } = context;
+        return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+      },
+    },
+    // conversationUpdated: {
+    //   subscribe: (_: any, __: any, context: GraphQLContext) => {
+    //     const { pubsub } = context;
+    //     return pubsub.asyncIterator("conversationUpdated");
+    //   },
+    // },
   },
 };
 
