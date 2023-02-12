@@ -5,14 +5,17 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import express from "express";
 import http from "http";
 import cors from "cors";
+import { PubSub } from "graphql-subscriptions";
 import bodyParser from "body-parser";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import typeDefs from "./graphql/type-defs/index";
 import resolvers from "./graphql/resolvers/index";
 import dotenv from "dotenv";
 import { getSession } from "next-auth/react";
-import { GraphQLContext, Session } from "./util/types";
+import { GraphQLContext, Session, SubscriptionContext } from "./util/types";
 import { PrismaClient } from "@prisma/client";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { WebSocketServer } from "ws";
 
 const main = async () => {
   dotenv.config();
@@ -28,15 +31,65 @@ const main = async () => {
   // enabling our servers to shut down gracefully.
   const httpServer = http.createServer(app);
 
+  // Creating the WebSocket server
+  const wsServer = new WebSocketServer({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if app.use
+    // serves expressMiddleware at a different path
+    path: "/graphql/subscriptions",
+  });
+
   // Context parameters
   const prisma = new PrismaClient();
+  const pubsub = new PubSub();
+
+  const getSubscriptionContext = async (
+    ctx: SubscriptionContext
+  ): Promise<GraphQLContext> => {
+    ctx;
+    // ctx is the graphql-ws Context where connectionParams live
+    if (ctx.connectionParams && ctx.connectionParams.session) {
+      const { session } = ctx.connectionParams;
+      return { session, prisma, pubsub };
+    }
+    // Otherwise let our resolvers know we don't have a current user
+    return { session: null, prisma, pubsub };
+  };
+
+  // Hand in the schema we just created and have the
+  // WebSocketServer start listening.
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: (ctx: SubscriptionContext): Promise<GraphQLContext> => {
+        // This will be run every time the client sends a subscription request
+        // Returning an object will add that information to our
+        // GraphQL context, which all of our resolvers have access to.
+        return getSubscriptionContext(ctx);
+      },
+    },
+    wsServer
+  );
 
   // Same ApolloServer initialization, plus the drain plugin
   // for our httpServer.
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      // Proper shutdown for the WebSocket server.
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
   // Ensure we wait for our server to start
   await server.start();
@@ -63,7 +116,7 @@ const main = async () => {
         // now though we added new properties to session in the next-auth frontend and it will be recieved by
         // this session object, but typescript will not know about it, so we need to add a custom type for it
         // hence we made a new interface called Session in types.ts and we will use it here by typecasting
-        return { session, prisma };
+        return { session, prisma, pubsub };
       },
     })
   );
