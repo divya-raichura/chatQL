@@ -17,21 +17,24 @@ import {
 import SearchList from "./SearchList";
 import Participants from "./Participants";
 import ListItem from "./ListItem";
+import { useRouter } from "next/router";
 
 interface IConversationsListProps {
   session: Session;
   getConversations?: Array<Conversation>;
+  onClickConversation: (conversationId: string) => void;
 }
 
 const boxSX = {
   "&:hover": {
-    backgroundColor: "#3c3c3c",
+    backgroundColor: "#424242",
   },
 };
 
 const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   session,
   getConversations,
+  onClickConversation,
 }) => {
   const [search, setSearch] = useState<string>("");
   const [getUsers, { data, loading }] = useLazyQuery<
@@ -41,6 +44,9 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   const [participants, addParticipants] = useState<Array<SearchedUser>>([]);
 
   const ref = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
+
   const focusRef = () => ref.current?.focus();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +99,13 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         <TextField
           inputRef={ref}
           value={search}
+          sx={{
+            color: "action.active",
+            mr: 3,
+            ml: 2,
+            my: 0.5,
+            wordWrap: "break-word",
+          }}
           onChange={handleInputChange}
           InputProps={{
             disableUnderline: true, // <== added this
@@ -128,19 +141,12 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
 
       {!search &&
         getConversations?.map((conversation) => (
-          <Box
+          <ListItem
+            onClickConversation={onClickConversation}
+            conversation={conversation}
             key={conversation.id}
-            boxShadow={3}
-            sx={{ cursor: "pointer", ...boxSX }}
-            height={50}
-            bgcolor="rgba(255, 255, 255, 0.07)"
-            borderRadius={4}
-            mb={2}
-            display="flex"
-            alignItems="center"
-          >
-            <ListItem conversation={conversation} />
-          </Box>
+            isSelected={router.query.conversationId === conversation.id}
+          />
         ))}
 
       {/* add conversations to search */}

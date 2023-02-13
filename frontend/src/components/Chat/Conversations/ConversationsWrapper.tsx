@@ -5,6 +5,7 @@ import ConversationsList from "./ConversationsList";
 import Query from "../../../graphql/operations/conversation";
 import { getConversationsData, Conversation } from "../../../util/types";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 interface IConversationsWrapperProps {
   session: Session;
@@ -19,6 +20,20 @@ const ConversationsWrapper: React.FunctionComponent<
     error: conversationsError,
     subscribeToMore: conversationsSubscribeToMore,
   } = useQuery<getConversationsData, null>(Query.Queries.GET_CONVERSATIONS);
+
+  const router = useRouter();
+
+  const onClickConversation = async (conversationId: string) => {
+    /**
+     * push to the conversation page
+     */
+
+    router.push({ query: { conversationId } });
+
+    /**
+     * mark as read
+     *  */
+  };
 
   const subscribeToNewConversations = () => {
     conversationsSubscribeToMore({
@@ -70,6 +85,7 @@ const ConversationsWrapper: React.FunctionComponent<
       <ConversationsList
         session={session}
         getConversations={conversationsData?.getConversations || []}
+        onClickConversation={onClickConversation}
       />
     </Box>
   );

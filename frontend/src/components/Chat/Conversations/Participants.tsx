@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import Grid from "@mui/material/Unstable_Grid2";
 import { styled } from "@mui/material/styles";
@@ -13,7 +13,7 @@ import { useMutation } from "@apollo/client";
 import ConversationOperations from "../../../graphql/operations/conversation";
 import { Session } from "next-auth";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface IParticipantsProps {
   participants: Array<SearchedUser>;
@@ -43,6 +43,8 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
     useMutation<createConversationData, createConversationVariables>(
       ConversationOperations.Mutations.CREATE_CONVERSATION
     );
+
+  const [conversationName, setConversationName] = useState<string>("");
 
   const router = useRouter();
 
@@ -103,17 +105,29 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
           ))}
         </Grid>
 
+        {participants.length > 1 && (
+          <TextField
+            sx={{ mt: 2 }}
+            fullWidth
+            value={conversationName}
+            onChange={(e) => setConversationName(e.target.value)}
+            label="Conversation Name"
+            variant="outlined"
+          />
+        )}
+
         <LoadingButton
-          loading={createConversationLoading}
-          fullWidth
           sx={{
+            mt: 2,
             backgroundColor: "#33bfff",
-            mt: 1,
             ":hover": { backgroundColor: "#2196f3" },
           }}
+          disabled={conversationName.length < 1}
+          fullWidth
+          loading={createConversationLoading}
+          onClick={createConversationHandler}
+          variant="contained"
           loadingPosition="center"
-          variant="outlined"
-          onClick={(e) => createConversationHandler()}
         >
           <span>Create Conversation</span>
         </LoadingButton>

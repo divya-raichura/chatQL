@@ -10,10 +10,10 @@ interface IChatProps {
 const Chat: React.FC<IChatProps> = ({ session }) => {
   return (
     <Grid container border="2px red solid" height="100vh" width="100%">
-      <Grid xs={12} sm={6} md={5}>
+      <Grid xs={12} sm={6} md={5} lg={4}>
         <ConversationsWrapper session={session} />
       </Grid>
-      <Grid xs={0} sm={6} md={7}>
+      <Grid xs={0} sm={6} md={7} lg={8}>
         <FeedWrapper session={session} />
       </Grid>
     </Grid>
