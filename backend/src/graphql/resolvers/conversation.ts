@@ -1,6 +1,7 @@
 import { ConversationPopulated, GraphQLContext } from "../../util/types";
 import { GraphQLError } from "graphql";
 import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
 
 const resolvers = {
   Query: {
@@ -93,10 +94,30 @@ const resolvers = {
 
   Subscription: {
     conversationCreated: {
-      subscribe: (_: any, __: any, context: GraphQLContext) => {
-        const { pubsub } = context;
-        return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
-      },
+      // subscribe: (_: any, __: any, context: GraphQLContext) => {
+      //   const { pubsub } = context;
+      //   return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+      // },
+      subscribe: withFilter(
+        (_: any, __: any, context: GraphQLContext) => {
+          const { pubsub } = context;
+          return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+        },
+        (
+          payload: ConversationCreatedSubscriptionPayload,
+          variables,
+          context: GraphQLContext
+        ) => {
+          const { session } = context;
+          const { Participants } = payload.conversationCreated;
+
+          const userIsParticipant = !!Participants.find(
+            (p) => p.userId === session?.user.id
+          );
+          
+          return userIsParticipant;
+        }
+      ),
     },
     // conversationUpdated: {
     //   subscribe: (_: any, __: any, context: GraphQLContext) => {
@@ -106,6 +127,10 @@ const resolvers = {
     // },
   },
 };
+
+export interface ConversationCreatedSubscriptionPayload {
+  conversationCreated: ConversationPopulated;
+}
 
 /**
  * prisma validator

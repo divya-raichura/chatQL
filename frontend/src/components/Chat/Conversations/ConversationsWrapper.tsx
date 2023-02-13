@@ -5,6 +5,7 @@ import ConversationsList from "./ConversationsList";
 import Query from "../../../graphql/operations/conversation";
 import { getConversationsData, Conversation } from "../../../util/types";
 import { useEffect } from "react";
+
 interface IConversationsWrapperProps {
   session: Session;
 }
