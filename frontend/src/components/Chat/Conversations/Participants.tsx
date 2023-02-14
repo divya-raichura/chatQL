@@ -52,11 +52,21 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
 
   const createConversationHandler = async () => {
     try {
-      // console.log("Create Conversation Mutation");
+      console.log("Create Conversation Mutation frontend: ", {
+        participantIds: [userId, ...participants.map((p) => p.id)],
+        conversationName:
+          participants.length == 1
+            ? participants[0].username.toString()
+            : conversationName,
+      });
 
       const { data } = await createConversation({
         variables: {
           participantIds: [userId, ...participants.map((p) => p.id)],
+          conversationName:
+            participants.length == 1
+              ? participants[0].username.toString()
+              : conversationName,
         },
       });
 
@@ -105,32 +115,33 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
           ))}
         </Grid>
 
-        {participants.length > 1 && (
-          <TextField
-            sx={{ mt: 2 }}
+        <form onSubmit={createConversationHandler}>
+          {participants.length > 1 && (
+            <TextField
+              sx={{ mt: 2 }}
+              fullWidth
+              value={conversationName}
+              onChange={(e) => setConversationName(e.target.value)}
+              label="Conversation Name"
+              variant="outlined"
+            />
+          )}
+          <LoadingButton
+            sx={{
+              mt: 2,
+              backgroundColor: "#33bfff",
+              ":hover": { backgroundColor: "#2196f3" },
+            }}
+            disabled={participants.length > 1 && conversationName.length < 1}
             fullWidth
-            value={conversationName}
-            onChange={(e) => setConversationName(e.target.value)}
-            label="Conversation Name"
-            variant="outlined"
-          />
-        )}
-
-        <LoadingButton
-          sx={{
-            mt: 2,
-            backgroundColor: "#33bfff",
-            ":hover": { backgroundColor: "#2196f3" },
-          }}
-          disabled={conversationName.length < 1}
-          fullWidth
-          loading={createConversationLoading}
-          onClick={createConversationHandler}
-          variant="contained"
-          loadingPosition="center"
-        >
-          <span>Create Conversation</span>
-        </LoadingButton>
+            loading={createConversationLoading}
+            variant="contained"
+            loadingPosition="center"
+            type="submit"
+          >
+            <span>Create Conversation</span>
+          </LoadingButton>
+        </form>
       </Box>
     </>
   );

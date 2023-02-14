@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 
 const ConversationFields = ` 
             id
+            conversationName
             Participants {
               id
               user {
@@ -35,8 +36,14 @@ export default {
 
   Mutations: {
     CREATE_CONVERSATION: gql`
-      mutation CreateConversation($participantIds: [String]!) {
-        createConversation(participantIds: $participantIds) {
+      mutation CreateConversation(
+        $participantIds: [String]!
+        $conversationName: String!
+      ) {
+        createConversation(
+          participantIds: $participantIds
+          conversationName: $conversationName
+        ) {
           conversationId
         }
       }

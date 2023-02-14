@@ -77,7 +77,7 @@ const ConversationsWrapper: React.FunctionComponent<
       width="100%"
       height="100vh"
       border="2px blue solid"
-      bgcolor="rgba(255,255,255,0.1)"
+      bgcolor="rgb(36, 36, 36)"
       py={1.5}
       px={1.5}
     >

@@ -35,6 +35,7 @@ export interface getConversationsData {
 
 export interface Conversation {
   id: string;
+  conversationName: string;
   Participants: Array<Participant>;
   latestMessage: Message;
   createdAt: string;
@@ -71,4 +72,5 @@ export interface createConversationData {
 
 export interface createConversationVariables {
   participantIds: Array<string>;
+  conversationName: string;
 }
