@@ -37,7 +37,7 @@ const resolvers = {
   Mutation: {
     createConversation: async (
       _: any,
-      args: { participantIds: Array<string> },
+      args: { participantIds: Array<string>; conversationName: string },
       context: GraphQLContext
     ): Promise<{ conversationId: string }> => {
       // create a new conversation
@@ -47,12 +47,16 @@ const resolvers = {
         throw new GraphQLError("Not authenticated");
       }
 
-      const { participantIds } = args;
+      const { participantIds, conversationName } = args;
 
       const userId = session.user.id;
 
       if (!participantIds.includes(userId)) {
         throw new GraphQLError("You must include yourself in the conversation");
+      }
+
+      if (!conversationName) {
+        throw new GraphQLError("Conversation name is required");
       }
 
       try {
@@ -67,10 +71,13 @@ const resolvers = {
                 })),
               },
             },
+            conversationName,
           },
 
           include: conversationPopulated,
         });
+
+        console.log("conversation created data", conversation);
 
         /**
          * we write "include" so as to emit an event to the client later using pubsub
@@ -114,7 +121,7 @@ const resolvers = {
           const userIsParticipant = !!Participants.find(
             (p) => p.userId === session?.user.id
           );
-          
+
           return userIsParticipant;
         }
       ),

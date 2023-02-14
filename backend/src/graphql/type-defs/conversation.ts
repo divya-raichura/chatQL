@@ -8,7 +8,10 @@ const conversationTypeDefs = gql`
   }
 
   type Mutation {
-    createConversation(participantIds: [String]!): createConversationResponse
+    createConversation(
+      participantIds: [String]!
+      conversationName: String!
+    ): createConversationResponse
   }
 
   type Subscription {
@@ -22,6 +25,7 @@ const conversationTypeDefs = gql`
 
   type Conversation {
     id: String
+    conversationName: String!
     Participants: [Participant]
     latestMessage: Message
     createdAt: Date
