@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { Session } from "next-auth";
 import { useRouter } from "next/router";
+import MessagesHeader from "./Messages/Header";
 
 interface IFeedWrapperProps {
   session: Session;
@@ -35,18 +36,22 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
         bgcolor: "rgba(255, 255, 255, 0.06)",
       }}
     >
-      <Box
-        width="100%"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          flexGrow: 1,
-          border: "2px solid red",
-        }}
-      >
-        conversation id: {conversationId}
-      </Box>
+      {conversationId && (
+        <Box
+          width="100%"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            flexGrow: 1,
+            border: "2px solid red",
+          }}
+        >
+          {/* messages header */}
+          <MessagesHeader conversationId={conversationId as string} />
+          {/* messages */}
+        </Box>
+      )}
     </Box>
   );
 };

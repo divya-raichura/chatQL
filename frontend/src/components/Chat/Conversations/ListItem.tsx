@@ -1,11 +1,8 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Conversation } from "@/util/types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { formatRelative } from "date-fns";
 import { GoPrimitiveDot } from "react-icons/go";
-import { MdDeleteOutline } from "react-icons/md";
-import { BiLogOut } from "react-icons/bi";
-import { AiOutlineEdit } from "react-icons/ai";
 import enUS from "date-fns/locale/en-US";
 
 interface ListItemProps {
