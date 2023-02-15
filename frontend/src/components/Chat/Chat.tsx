@@ -9,17 +9,20 @@ interface IChatProps {
 
 const Chat: React.FC<IChatProps> = ({ session }) => {
   return (
-    <Box>
-      <Grid container>
-        <Grid item xs={12} sm={6} md={5} lg={4}>
-          <ConversationsWrapper session={session} />
-        </Grid>
-        <Grid item xs={0} sm={6} md={7} lg={8}>
-          <FeedWrapper session={session} />
-        </Grid>
-      </Grid>
+    <Box sx={{ display: "flex" }} height="100vh" width="100vw">
+      <ConversationsWrapper session={session} />
+      <FeedWrapper session={session} />
     </Box>
   );
 };
 
 export default Chat;
+
+//  <Grid container>
+//    <Grid item xs={12} sm={6} md={5} lg={4}>
+//      <ConversationsWrapper session={session} />
+//    </Grid>
+//    <Grid item xs={0} sm={6} md={7} lg={8}>
+//      <FeedWrapper session={session} />
+//    </Grid>
+//  </Grid>;

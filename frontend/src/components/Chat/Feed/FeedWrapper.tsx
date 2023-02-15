@@ -17,16 +17,31 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
     // display flex only when there is a conversation selected otherwise none, for mobile
     // for desktop, display flex always
     <Box
-      height="100vh"
-      border="10px solid green"
-      width="100%"
-      bgcolor="rgba(255, 255, 255, 0.06)"
+      sx={{
+        display: {
+          xs: conversationId ? "flex" : "none",
+          sm: "flex",
+          md: "flex",
+          lg: "flex",
+        },
+        height: "100vh",
+        border: "10px solid green",
+        width: "100%",
+        bgcolor: "rgba(255, 255, 255, 0.06)",
+      }}
     >
-      {conversationId ? (
-        <Box>{conversationId}</Box>
-      ) : (
-        <Box>No conversation selected</Box>
-      )}
+      <Box
+        width="100%"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          flexGrow: 1,
+          border: "2px solid red",
+        }}
+      >
+        conversation id: {conversationId}
+      </Box>
     </Box>
   );
 };

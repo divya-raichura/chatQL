@@ -23,6 +23,8 @@ const ConversationsWrapper: React.FunctionComponent<
 
   const router = useRouter();
 
+  const { conversationId } = router.query;
+
   const onClickConversation = async (conversationId: string) => {
     /**
      * push to the conversation page
@@ -74,7 +76,25 @@ const ConversationsWrapper: React.FunctionComponent<
 
   return (
     <Box
-      width="100%"
+      sx={{
+        display: {
+          xs: conversationId ? "none" : "flex",
+          sm: "flex",
+          md: "flex",
+          lg: "flex",
+        },
+        width: {
+          xs: "100%",
+          sm: "48%",
+          md: "35%",
+        },
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: "100vh",
+        border: "2px blue solid",
+        bgcolor: "rgb(36, 36, 36)",
+      }}
       height="100vh"
       border="2px blue solid"
       bgcolor="rgb(36, 36, 36)"
