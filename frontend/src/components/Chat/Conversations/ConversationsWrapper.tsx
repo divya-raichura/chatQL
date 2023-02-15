@@ -84,22 +84,16 @@ const ConversationsWrapper: React.FunctionComponent<
           lg: "flex",
         },
         width: {
-          xs: "100%",
+          xs: "98%",
           sm: "48%",
           md: "35%",
         },
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        height: "100vh",
-        border: "2px blue solid",
-        bgcolor: "rgb(36, 36, 36)",
       }}
       height="100vh"
-      border="2px blue solid"
+      border="10px blue solid"
       bgcolor="rgb(36, 36, 36)"
-      py={1.5}
-      px={1.5}
+      py={1}
+      px={1}
     >
       {/* Skeleton Loader */}
       <ConversationsList

@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box, Divider, Grid, Stack } from "@mui/material";
 import { Session } from "next-auth";
 import ConversationsWrapper from "./Conversations/ConversationsWrapper";
 import FeedWrapper from "./Feed/FeedWrapper";
@@ -9,10 +9,18 @@ interface IChatProps {
 
 const Chat: React.FC<IChatProps> = ({ session }) => {
   return (
-    <Box sx={{ display: "flex" }} height="100vh" width="100vw">
+    <Stack
+      direction="row"
+      divider={<Divider orientation="vertical" flexItem />}
+      spacing={0.5}
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+      width="100vw"
+    >
       <ConversationsWrapper session={session} />
       <FeedWrapper session={session} />
-    </Box>
+    </Stack>
   );
 };
 

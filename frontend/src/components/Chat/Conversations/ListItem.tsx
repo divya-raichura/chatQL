@@ -35,102 +35,104 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
   isSelected,
 }) => {
   return (
-    <Box
-      sx={boxSx}
-      width="100%"
-      height={65}
-      borderRadius={3}
-      mb={1}
-      style={{
-        backgroundColor: isSelected ? "#039BE5" : "rgb(45, 45, 45)",
-      }}
-      display="flex"
-      alignItems="center"
-      onClick={() => onClickConversation(conversation.id)}
-    >
+    <Box width="100%">
       <Box
-        sx={{
-          width: "95%",
-          color: "action.active",
-          mr: 3,
-          ml: 0.5,
-          my: 0.5,
-          wordWrap: "break-word",
+        sx={boxSx}
+        width="100%"
+        height={65}
+        borderRadius={3}
+        mb={1}
+        style={{
+          backgroundColor: isSelected ? "#039BE5" : "rgb(45, 45, 45)",
         }}
+        display="flex"
+        alignItems="center"
+        onClick={() => onClickConversation(conversation.id)}
       >
         <Box
           sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            flexDirection: "row",
+            width: "95%",
+            color: "action.active",
+            mr: 3,
+            ml: 0.5,
+            my: 0.5,
+            wordWrap: "break-word",
           }}
         >
           <Box
             sx={{
-              width: "80%",
-              height: "100%",
-              flexGrow: 1,
               display: "flex",
-              alignItems: "center",
               flexWrap: "wrap",
+              alignItems: "center",
+              flexDirection: "row",
             }}
           >
-            <GoPrimitiveDot fontSize={18} color="#6B46C1" />
-            <AccountCircleIcon fontSize="large" />
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "70%",
+                width: "80%",
                 height: "100%",
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
               }}
             >
-              <Typography
-                ml={1}
-                sx={{ fontSize: "0.900rem", fontWeight: "700" }}
+              <GoPrimitiveDot fontSize={18} color="#6B46C1" />
+              <AccountCircleIcon fontSize="large" />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "70%",
+                  height: "100%",
+                }}
               >
-                {conversation.conversationName}
-              </Typography>
-              {!conversation.latestMessage && (
-                <Box width="110%">
-                  <Typography
-                    ml={1}
-                    sx={{
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      fontSize: "0.700rem",
-                      fontWeight: "700",
-                      color: isSelected ? "white" : "grey",
-                    }}
-                  >
-                    {/* {conversation.latestMessage} */}
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Tempore architecto dolorem quos omnis illo repudiandae
-                    reiciendis veniam ex laborum aliquid!
-                  </Typography>
-                </Box>
-              )}
+                <Typography
+                  ml={1}
+                  sx={{ fontSize: "0.900rem", fontWeight: "700" }}
+                >
+                  {conversation.conversationName}
+                </Typography>
+                {!conversation.latestMessage && (
+                  <Box width="110%">
+                    <Typography
+                      ml={1}
+                      sx={{
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        fontSize: "0.700rem",
+                        fontWeight: "700",
+                        color: isSelected ? "white" : "grey",
+                      }}
+                    >
+                      {/* {conversation.latestMessage} */}
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Tempore architecto dolorem quos omnis illo repudiandae
+                      reiciendis veniam ex laborum aliquid!
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
             </Box>
+            <Typography
+              sx={{
+                fontSize: "0.700rem",
+                fontWeight: "700",
+                color: isSelected ? "white" : "grey",
+              }}
+            >
+              {formatRelative(new Date(conversation.updatedAt), new Date(), {
+                locale: {
+                  ...enUS,
+                  formatRelative: (token) =>
+                    formatRelativeLocale[
+                      token as keyof typeof formatRelativeLocale
+                    ],
+                },
+              })}
+            </Typography>
           </Box>
-          <Typography
-            sx={{
-              fontSize: "0.700rem",
-              fontWeight: "700",
-              color: isSelected ? "white" : "grey",
-            }}
-          >
-            {formatRelative(new Date(conversation.updatedAt), new Date(), {
-              locale: {
-                ...enUS,
-                formatRelative: (token) =>
-                  formatRelativeLocale[
-                    token as keyof typeof formatRelativeLocale
-                  ],
-              },
-            })}
-          </Typography>
         </Box>
       </Box>
     </Box>

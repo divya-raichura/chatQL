@@ -17,7 +17,7 @@ const SearchList: React.FunctionComponent<ISearchListProps> = ({
   return (
     <>
       {search && data && data.getUsers && (
-        <Box>
+        <Box width="100%">
           {data.getUsers.map((user: SearchedUser) => (
             <Box
               key={user.id}

@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
 import { Session } from "next-auth";
-import { TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useRef, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import GQL from "../../../graphql/operations/user";
@@ -18,6 +16,7 @@ import SearchList from "./SearchList";
 import Participants from "./Participants";
 import ListItem from "./ListItem";
 import { useRouter } from "next/router";
+import SearchBar from "./SearchBar";
 
 interface IConversationsListProps {
   session: Session;
@@ -25,29 +24,20 @@ interface IConversationsListProps {
   onClickConversation: (conversationId: string) => void;
 }
 
-const boxSX = {
-  "&:hover": {
-    backgroundColor: "#424242",
-  },
-};
-
 const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   session,
   getConversations,
   onClickConversation,
 }) => {
   const [search, setSearch] = useState<string>("");
-  const [getUsers, { data, loading }] = useLazyQuery<
+  const [getUsers, { data: searchedUsersData, loading }] = useLazyQuery<
     searchUserData,
     searchUserVariables
   >(GQL.Queries.GET_USERS);
   const [participants, addParticipants] = useState<Array<SearchedUser>>([]);
 
-  const ref = useRef<HTMLInputElement>(null);
-
   const router = useRouter();
-
-  const focusRef = () => ref.current?.focus();
+  const { conversationId } = router.query;
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -66,8 +56,6 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
     addParticipants((prev) => prev.filter((p) => p.id !== user.id));
   };
 
-  console.log("data", data);
-
   useEffect(() => {
     if (search.length >= 1) {
       getUsers({ variables: { username: search } });
@@ -76,48 +64,8 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
 
   return (
     <Box width="100%">
-      <Box
-        boxShadow={3}
-        sx={boxSX}
-        height={40}
-        bgcolor="rgba(60,60,60,0.7)"
-        borderRadius={3}
-        mb={2}
-        display="flex"
-        alignItems="center"
-      >
-        <SearchIcon
-          onClick={focusRef}
-          sx={{
-            color: "action.active",
-            mr: 1,
-            ml: 2,
-            my: 0.5,
-            cursor: "pointer",
-          }}
-        />
-        <TextField
-          inputRef={ref}
-          value={search}
-          sx={{
-            color: "action.active",
-            mr: 3,
-            ml: 2,
-            my: 0.5,
-            wordWrap: "break-word",
-          }}
-          onChange={handleInputChange}
-          InputProps={{
-            disableUnderline: true, // <== added this
-            style: {
-              height: "40px",
-            },
-          }}
-          placeholder="Search or start new chat"
-          fullWidth
-          variant="standard"
-        />
-      </Box>
+      <SearchBar search={search} handleInputChange={handleInputChange} />
+      {loading && <LinearProgress />}
 
       {participants.length > 0 && (
         <Participants
@@ -129,12 +77,10 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         />
       )}
 
-      {loading && <LinearProgress />}
-
-      {data && (
+      {searchedUsersData && (
         <SearchList
           search={search}
-          data={data}
+          data={searchedUsersData}
           addParticipantsHandler={addParticipantsHandler}
         />
       )}
@@ -145,7 +91,7 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
             onClickConversation={onClickConversation}
             conversation={conversation}
             key={conversation.id}
-            isSelected={router.query.conversationId === conversation.id}
+            isSelected={conversationId === conversation.id}
           />
         ))}
 

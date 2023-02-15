@@ -24,9 +24,14 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
           md: "flex",
           lg: "flex",
         },
+        width: {
+          xs: "98%",
+          sm: "48%",
+          md: "64%",
+        },
         height: "100vh",
         border: "10px solid green",
-        width: "100%",
+        // width: "100%",
         bgcolor: "rgba(255, 255, 255, 0.06)",
       }}
     >
