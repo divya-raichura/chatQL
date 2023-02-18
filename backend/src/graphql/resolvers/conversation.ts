@@ -1,4 +1,8 @@
-import { ConversationPopulated, GraphQLContext } from "../../util/types";
+import {
+  ConversationPopulated,
+  GraphQLContext,
+  ConversationCreatedSubscriptionPayload,
+} from "../../util/types";
 import { GraphQLError } from "graphql";
 import { Prisma } from "@prisma/client";
 import { withFilter } from "graphql-subscriptions";
@@ -77,8 +81,6 @@ const resolvers = {
           include: conversationPopulated,
         });
 
-        console.log("conversation created data", conversation);
-
         /**
          * we write "include" so as to emit an event to the client later using pubsub
          * we will use pubsub instance to emit conversation created event which the new subscription
@@ -134,10 +136,6 @@ const resolvers = {
     // },
   },
 };
-
-export interface ConversationCreatedSubscriptionPayload {
-  conversationCreated: ConversationPopulated;
-}
 
 /**
  * prisma validator
