@@ -67,96 +67,105 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ conversationId }) => {
   };
 
   return (
-    <Stack direction="row" mx={2} mt={1} alignItems="center" height="60px">
-      <Button
-        onClick={() =>
-          router.replace("?conversationId", "/", {
-            shallow: true,
-          })
-        }
-        sx={{
-          display: {
-            xs: "block",
-            sm: "none",
-            md: "none",
-            lg: "none",
-          },
-        }}
+    <>
+      <Stack
+        direction="row"
+        mx={3}
+        mt={1}
+        alignItems="center"
+        height="60px"
       >
-        <AiOutlineArrowLeft color="white" fontSize={20} />
-      </Button>
+        <Button
+          onClick={() =>
+            router.replace("?conversationId", "/", {
+              shallow: true,
+            })
+          }
+          sx={{
+            display: {
+              xs: "block",
+              sm: "none",
+              md: "none",
+              lg: "none",
+            },
+          }}
+        >
+          <AiOutlineArrowLeft color="white" fontSize={20} />
+        </Button>
 
-      {/* {loading && <SkeletonLoader count={1} height="30px" width="320px" />}
+        {/* {loading && <SkeletonLoader count={1} height="30px" width="320px" />}
       {!conversation && !loading && <Text>Conversation Not Found</Text>} */}
 
-      {conversation && (
-        <Stack direction="row" alignItems="center" ml={2}>
-          <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
-          <Box ml={1.5}>
-            <Typography
-              sx={{
-                fontSize: "1.000rem",
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              {conversation.conversationName}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "0.750rem",
-                fontWeight: "700",
-                color: "grey",
-              }}
-            >
-              {conversation.Participants.length} members
-            </Typography>
-          </Box>
-        </Stack>
-      )}
+        {conversation && (
+          <Stack direction="row" alignItems="center" ml={2}>
+            <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
+            <Box ml={1.5}>
+              <Typography
+                sx={{
+                  fontSize: "1.000rem",
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                {conversation.conversationName}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.750rem",
+                  fontWeight: "700",
+                  color: "grey",
+                }}
+              >
+                {conversation.Participants.length} members
+              </Typography>
+            </Box>
+          </Stack>
+        )}
 
-      <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1 }} />
 
-      <div>
-        <Button
-          onClick={handleClick}
-          aria-controls={open ? "demo-customized-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          disableElevation
-        >
-          <BiDotsVerticalRounded color="white" fontSize={26} />
-        </Button>
-        <StyledMenu
-          id="demo-customized-menu"
-          MenuListProps={{
-            "aria-labelledby": "demo-customized-button",
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose} disableRipple>
-            <Box display="flex" alignItems="center">
-              <AiOutlineEdit />
-              <Typography ml={0.5}>Edit</Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleClose} disableRipple>
-            <Box display="flex" alignItems="center">
-              <BiLogOut />
-              <Typography ml={0.5}>Leave</Typography>
-            </Box>
-          </MenuItem>
-          <MenuItem onClick={handleClose} disableRipple>
-            <Box display="flex" alignItems="center">
-              <MdDeleteOutline />
-              <Typography ml={0.5}>Delete</Typography>
-            </Box>
-          </MenuItem>
-        </StyledMenu>
-      </div>
-    </Stack>
+        <div>
+          <Button
+            onClick={handleClick}
+            aria-controls={open ? "demo-customized-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            disableElevation
+          >
+            <BiDotsVerticalRounded color="white" fontSize={26} />
+          </Button>
+          <StyledMenu
+            id="demo-customized-menu"
+            MenuListProps={{
+              "aria-labelledby": "demo-customized-button",
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose} disableRipple>
+              <Box display="flex" alignItems="center">
+                <AiOutlineEdit />
+                <Typography ml={0.5}>Edit</Typography>
+              </Box>
+            </MenuItem>
+            <MenuItem onClick={handleClose} disableRipple>
+              <Box display="flex" alignItems="center">
+                <BiLogOut />
+                <Typography ml={0.5}>Leave</Typography>
+              </Box>
+            </MenuItem>
+            <MenuItem onClick={handleClose} disableRipple>
+              <Box display="flex" alignItems="center">
+                <MdDeleteOutline />
+                <Typography ml={0.5}>Delete</Typography>
+              </Box>
+            </MenuItem>
+          </StyledMenu>
+        </div>
+      </Stack>
+      <Divider orientation="horizontal" flexItem />
+    </>
   );
 };
 export default MessagesHeader;
