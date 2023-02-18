@@ -99,6 +99,7 @@ const ConversationsWrapper: React.FunctionComponent<
         session={session}
         getConversations={conversationsData?.getConversations || []}
         onClickConversation={onClickConversation}
+        conversationLoading={conversationsLoading}
       />
     </Box>
   );

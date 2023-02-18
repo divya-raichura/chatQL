@@ -71,7 +71,7 @@ const resolvers = {
                 // create a new conversation realation for each participant
                 data: participantIds.map((participantId) => ({
                   userId: participantId,
-                  hasUnread: participantId !== userId,
+                  hasSeen: participantId === userId,
                 })),
               },
             },

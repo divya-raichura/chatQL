@@ -45,7 +45,7 @@ export interface Conversation {
 export interface Participant {
   id: string;
   user: User;
-  hasUnread: boolean;
+  hasSeen: boolean;
 }
 
 export interface User {
@@ -73,4 +73,34 @@ export interface createConversationData {
 export interface createConversationVariables {
   participantIds: Array<string>;
   conversationName: string;
+}
+
+/**
+ * Message related types
+ *  */
+
+export interface getMessagesData {
+  getMessages: Array<Message>;
+}
+
+export interface getMessagesVariables {
+  conversationId: string;
+}
+
+export interface sendMessageData {
+  sendMessage: boolean;
+}
+
+export interface sendMessageVariables {
+  conversationId: string;
+  text: string;
+  senderId: string;
+}
+
+export interface messageSentData {
+  messageSent: Message;
+}
+
+export interface messageSentVariables {
+  conversationId: string;
 }

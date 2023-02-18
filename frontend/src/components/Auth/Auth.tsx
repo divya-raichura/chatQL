@@ -31,11 +31,8 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
     }
 
     try {
-      console.log("HERE IS THE SESSION IN FRONTEND", session);
 
       let { data } = await createUsername({ variables: { username } });
-
-      console.log(data);
 
       if (!data?.createUsername) {
         throw new Error();

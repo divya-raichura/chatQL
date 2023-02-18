@@ -35,7 +35,7 @@ const conversationTypeDefs = gql`
   type Participant {
     id: String
     user: User
-    hasUnread: Boolean
+    hasSeen: Boolean
   }
 `;
 

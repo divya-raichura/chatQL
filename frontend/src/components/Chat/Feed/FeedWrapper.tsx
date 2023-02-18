@@ -3,6 +3,7 @@ import { Session } from "next-auth";
 import { useRouter } from "next/router";
 import MessagesHeader from "./Messages/Header";
 import Input from "./Messages/Input";
+import Message from "./Messages/Messages";
 
 interface IFeedWrapperProps {
   session: Session;
@@ -49,10 +50,13 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
             {/* messages header */}
             <MessagesHeader conversationId={conversationId as string} />
             <Box flexGrow={1} />
-            {/* we have message header, at top, now we want input at bottom */}
-            <Input conversationId={conversationId as string} />
 
             {/* messages */}
+            <Message conversationId={conversationId as string} />
+
+            {/* input */}
+            <Input conversationId={conversationId as string} />
+
             {/* input */}
           </Box>
         </>

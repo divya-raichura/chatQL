@@ -14,6 +14,10 @@ const SearchList: React.FunctionComponent<ISearchListProps> = ({
   data,
   addParticipantsHandler,
 }) => {
+  if (search && data.getUsers.length === 0) {
+    return <h1>No users</h1>;
+  }
+
   return (
     <>
       {search && data && data.getUsers && (

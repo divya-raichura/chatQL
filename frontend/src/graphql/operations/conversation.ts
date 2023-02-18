@@ -9,7 +9,7 @@ const ConversationFields = `
                 id
                 username
               }
-              hasUnread
+              hasSeen
             }
             latestMessage {
               id

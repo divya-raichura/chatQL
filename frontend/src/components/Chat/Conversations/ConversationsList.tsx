@@ -5,6 +5,7 @@ import { useLazyQuery } from "@apollo/client";
 import GQL from "../../../graphql/operations/user";
 import React from "react";
 import { toast } from "react-hot-toast";
+import CircularProgress from "@mui/material/CircularProgress";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
   Conversation,
@@ -21,19 +22,19 @@ import SearchBar from "./SearchBar";
 interface IConversationsListProps {
   session: Session;
   getConversations?: Array<Conversation>;
+  conversationLoading?: boolean;
   onClickConversation: (conversationId: string) => void;
 }
 
 const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   session,
   getConversations,
+  conversationLoading,
   onClickConversation,
 }) => {
   const [search, setSearch] = useState<string>("");
-  const [getUsers, { data: searchedUsersData, loading }] = useLazyQuery<
-    searchUserData,
-    searchUserVariables
-  >(GQL.Queries.GET_USERS);
+  const [getUsers, { data: searchedUsersData, loading: searchUserLoading }] =
+    useLazyQuery<searchUserData, searchUserVariables>(GQL.Queries.GET_USERS);
   const [participants, addParticipants] = useState<Array<SearchedUser>>([]);
 
   const router = useRouter();
@@ -65,7 +66,7 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   return (
     <Box width="100%">
       <SearchBar search={search} handleInputChange={handleInputChange} />
-      {loading && <LinearProgress />}
+      {searchUserLoading && <LinearProgress />}
 
       {participants.length > 0 && (
         <Participants
@@ -85,7 +86,26 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         />
       )}
 
-      {!search &&
+      {conversationLoading && (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </>
+      )}
+
+      {!conversationLoading &&
+        !search &&
+        getConversations &&
+        getConversations?.length > 0 &&
         getConversations?.map((conversation) => (
           <ListItem
             onClickConversation={onClickConversation}
@@ -94,6 +114,23 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
             isSelected={conversationId === conversation.id}
           />
         ))}
+
+      {!conversationLoading &&
+        !search &&
+        getConversations &&
+        getConversations?.length == 0 && (
+          <Box
+          // sx={{
+          //   display: "flex",
+          //   justifyContent: "center",
+          //   alignItems: "center",
+          //   width: "100%",
+          //   height: "100%",
+          // }}
+          >
+            <h1>Search a User to start a conversation</h1>
+          </Box>
+        )}
 
       {/* add conversations to search */}
       {/* 

@@ -13,7 +13,7 @@ import { useMutation } from "@apollo/client";
 import ConversationOperations from "../../../graphql/operations/conversation";
 import { Session } from "next-auth";
 import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 
 interface IParticipantsProps {
   participants: Array<SearchedUser>;
@@ -50,16 +50,11 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
 
   const userId = session.user.id;
 
-  const createConversationHandler = async () => {
+  const createConversationHandler = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
     try {
-      console.log("Create Conversation Mutation frontend: ", {
-        participantIds: [userId, ...participants.map((p) => p.id)],
-        conversationName:
-          participants.length == 1
-            ? participants[0].username.toString()
-            : conversationName,
-      });
-
       const { data } = await createConversation({
         variables: {
           participantIds: [userId, ...participants.map((p) => p.id)],
@@ -83,13 +78,8 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
        */
       addParticipants([]);
       setSearch("");
-
-      console.log(
-        "here is participant frontend data recieved from backend",
-        data
-      );
     } catch (error: any) {
-      console.log("onCreateConversation error", error);
+      console.log("onCreateConversation error", error, error.message);
       toast.error(error?.message);
     }
   };
