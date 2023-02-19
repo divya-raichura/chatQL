@@ -21,7 +21,11 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
   const [createUsername, { loading, error }] = useMutation<
     createUsernameData,
     createUsernameVariables
-  >(UserOperations.Mutations.CREATE_USERNAME);
+  >(UserOperations.Mutations.CREATE_USERNAME, {
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,8 +34,12 @@ const Auth: React.FunctionComponent<IAuthProps> = ({ session }) => {
       return;
     }
 
-    try {
+    if (username?.length > 15) {
+      toast.error("Username must be less than 15 characters long");
+      return;
+    }
 
+    try {
       let { data } = await createUsername({ variables: { username } });
 
       if (!data?.createUsername) {

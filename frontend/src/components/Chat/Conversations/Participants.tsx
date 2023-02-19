@@ -119,8 +119,8 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
           <LoadingButton
             sx={{
               mt: 2,
-              backgroundColor: "#33bfff",
-              ":hover": { backgroundColor: "#2196f3" },
+              backgroundColor: "#3f51b5",
+              ":hover": { backgroundColor: "RGBA(255, 255, 255, 0.16)" },
             }}
             disabled={participants.length > 1 && conversationName.length < 1}
             fullWidth

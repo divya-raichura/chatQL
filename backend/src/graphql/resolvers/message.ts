@@ -88,17 +88,6 @@ const resolvers = {
       }
 
       try {
-        // Create a new message
-        const newMessage = await prisma.message.create({
-          data: {
-            text,
-            senderId,
-            conversationId,
-          },
-
-          include: messagePopulated,
-        });
-
         const participant = await prisma.userConversation.findFirst({
           where: {
             userId,
@@ -109,6 +98,17 @@ const resolvers = {
         if (!participant) {
           throw new GraphQLError("Not authorized");
         }
+
+        // Create a new message
+        const newMessage = await prisma.message.create({
+          data: {
+            text,
+            senderId,
+            conversationId,
+          },
+
+          include: messagePopulated,
+        });
 
         // Update the last message of the conversation
         const updatedConversation = await prisma.conversation.update({

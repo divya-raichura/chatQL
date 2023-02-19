@@ -13,6 +13,7 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
   session,
 }) => {
   const router = useRouter();
+  const { id: userId } = session.user;
 
   const { conversationId } = router.query;
 
@@ -49,15 +50,16 @@ const FeedWrapper: React.FunctionComponent<IFeedWrapperProps> = ({
           >
             {/* messages header */}
             <MessagesHeader conversationId={conversationId as string} />
-            <Box flexGrow={1} />
+            {/* <Box flexGrow={1} /> */}
 
             {/* messages */}
-            <Message conversationId={conversationId as string} />
+            <Message
+              userId={userId}
+              conversationId={conversationId as string}
+            />
 
             {/* input */}
-            <Input conversationId={conversationId as string} />
-
-            {/* input */}
+            <Input userId={userId} conversationId={conversationId as string} />
           </Box>
         </>
       ) : (

@@ -64,7 +64,18 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
   }, [search, getUsers]);
 
   return (
-    <Box width="100%">
+    <Box
+      width="100%"
+      sx={{
+        overflowY: "auto",
+        overflowX: "hidden",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+      }}
+    >
       <SearchBar search={search} handleInputChange={handleInputChange} />
       {searchUserLoading && <LinearProgress />}
 

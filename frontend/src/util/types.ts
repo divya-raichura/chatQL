@@ -79,28 +79,30 @@ export interface createConversationVariables {
  * Message related types
  *  */
 
-export interface getMessagesData {
-  getMessages: Array<Message>;
-}
-
-export interface getMessagesVariables {
-  conversationId: string;
-}
-
-export interface sendMessageData {
-  sendMessage: boolean;
-}
-
 export interface sendMessageVariables {
   conversationId: string;
   text: string;
   senderId: string;
 }
 
-export interface messageSentData {
-  messageSent: Message;
+export interface sendMessageData {
+  sendMessage: boolean;
 }
 
-export interface messageSentVariables {
+export interface getMessagesVariables {
   conversationId: string;
+}
+
+export interface getMessagesData {
+  getMessages: Array<getMessageStructure>;
+}
+
+export interface getMessageStructure {
+  id: string;
+  sender: {
+    id: string;
+    username: string;
+  };
+  text: string;
+  createdAt: string;
 }
