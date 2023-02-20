@@ -48,6 +48,14 @@ export default {
         }
       }
     `,
+    MARK_CONVERSATION_AS_SEEN: gql`
+      mutation MarkConversationAsSeen(
+        $conversationId: String!
+        $userId: String!
+      ) {
+        markConversationAsSeen(conversationId: $conversationId, userId: $userId)
+      }
+    `,
   },
 
   Subscriptions: {

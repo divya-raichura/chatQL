@@ -9,6 +9,7 @@ interface ListItemProps {
   conversation: Conversation;
   onClickConversation: (conversationId: string) => void;
   isSelected: boolean;
+  hasSeenMessage: boolean;
 }
 
 const formatRelativeLocale = {
@@ -29,6 +30,7 @@ const boxSx = {
 const ListItem: React.FunctionComponent<ListItemProps> = ({
   conversation,
   onClickConversation,
+  hasSeenMessage,
   isSelected,
 }) => {
   return (
@@ -39,7 +41,7 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
       borderRadius={3}
       mb={1}
       style={{
-        backgroundColor: isSelected ? "#3f51b5" : "rgb(45, 45, 45)",
+        backgroundColor: isSelected ? "#3f51b5" : "rgba(255, 255, 255, 0.08)",
       }}
       display="flex"
       alignItems="center"
@@ -73,7 +75,9 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
               flexWrap: "wrap",
             }}
           >
-            <GoPrimitiveDot fontSize={18} color="#6B46C1" />
+            {hasSeenMessage === false && (
+              <GoPrimitiveDot fontSize={18} color="#6B46C1" />
+            )}
             <AccountCircleIcon fontSize="large" />
             <Box
               sx={{
@@ -89,7 +93,7 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
               >
                 {conversation.conversationName}
               </Typography>
-              {!conversation.latestMessage && (
+              {/* {!conversation.latestMessage && (
                 <Box width="110%">
                   <Typography
                     ml={1}
@@ -118,7 +122,7 @@ const ListItem: React.FunctionComponent<ListItemProps> = ({
                     {conversation.latestMessage.text}
                   </Typography>
                 </Box>
-              )}
+              )} */}
             </Box>
           </Box>
           <Box

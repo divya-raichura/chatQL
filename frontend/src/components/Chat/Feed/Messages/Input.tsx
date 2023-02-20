@@ -137,7 +137,6 @@ const Input: React.FunctionComponent<IInputProps> = ({
           sx={{ ml: 1, flex: 1 }}
           variant="standard"
           placeholder="Type a message"
-          onKeyDown={submitHandler}
           multiline
           minRows={1}
           maxRows={5}
@@ -151,7 +150,7 @@ const Input: React.FunctionComponent<IInputProps> = ({
           }}
         />
 
-        <IconButton type="button" sx={{ p: "10px" }}>
+        <IconButton type="submit" sx={{ p: "10px" }}>
           <FiSend color="white" fontSize={20} />
         </IconButton>
       </Paper>

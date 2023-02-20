@@ -12,6 +12,7 @@ const conversationTypeDefs = gql`
       participantIds: [String]!
       conversationName: String
     ): createConversationResponse
+    markConversationAsSeen(conversationId: String!, userId: String!): Boolean
   }
 
   type Subscription {

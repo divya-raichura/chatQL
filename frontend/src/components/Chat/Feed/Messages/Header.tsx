@@ -74,7 +74,17 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ conversationId }) => {
 
   return (
     <>
-      <Stack direction="row" m={1} mt={1} alignItems="center" height="60px">
+      <Stack
+        sx={{
+          backgroundColor: "#404040",
+        }}
+        borderRadius={3}
+        direction="row"
+        m={1}
+        mt={1}
+        alignItems="center"
+        height="60px"
+      >
         <Button
           onClick={() =>
             router.replace("?conversationId", "/", {

@@ -97,10 +97,10 @@ const resolvers = {
           data: {
             Participants: {
               createMany: {
-                // create a new conversation realation for each participant
+                // create a new conversation relation for each participant
                 data: participantIds.map((participantId) => ({
                   userId: participantId,
-                  hasSeen: participantId === userId,
+                  hasSeen: participantId === session.user.id ? true : false,
                 })),
               },
             },
@@ -126,6 +126,47 @@ const resolvers = {
       } catch (error) {
         console.log("conversation create error", error);
         throw new GraphQLError("Error creating conversation");
+      }
+    },
+
+    markConversationAsSeen: async (
+      _: any,
+      args: { conversationId: string; userId: string },
+      context: GraphQLContext
+    ): Promise<boolean> => {
+      const { session, prisma } = context;
+
+      if (!session) {
+        throw new GraphQLError("Not authenticated");
+      }
+
+      const { conversationId, userId } = args;
+
+      try {
+        const participant = await prisma.userConversation.findFirst({
+          where: {
+            userId,
+            conversationId,
+          },
+        });
+
+        if (!participant) {
+          throw new GraphQLError("Participant not found");
+        }
+
+        await prisma.userConversation.update({
+          where: {
+            id: participant.id,
+          },
+          data: {
+            hasSeen: true,
+          },
+        });
+
+        return true;
+      } catch (error) {
+        console.log("markConversationAsSeen error", error);
+        throw new GraphQLError("Error marking conversation as seen");
       }
     },
   },

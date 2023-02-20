@@ -1,9 +1,13 @@
-import { useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Box } from "@mui/system";
 import { Session } from "next-auth";
 import ConversationsList from "./ConversationsList";
-import Query from "../../../graphql/operations/conversation";
-import { getConversationsData, Conversation } from "../../../util/types";
+import GQL from "../../../graphql/operations/conversation";
+import {
+  getConversationsData,
+  Conversation,
+  Participant,
+} from "../../../util/types";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -19,13 +23,21 @@ const ConversationsWrapper: React.FunctionComponent<
     loading: conversationsLoading,
     error: conversationsError,
     subscribeToMore: conversationsSubscribeToMore,
-  } = useQuery<getConversationsData, null>(Query.Queries.GET_CONVERSATIONS);
+  } = useQuery<getConversationsData, null>(GQL.Queries.GET_CONVERSATIONS);
+
+  const [markAsRead] = useMutation<
+    { markConversationAsSeen: boolean },
+    { conversationId: string; userId: string }
+  >(GQL.Mutations.MARK_CONVERSATION_AS_SEEN);
 
   const router = useRouter();
 
   const { conversationId } = router.query;
 
-  const onClickConversation = async (conversationId: string) => {
+  const onClickConversation = async (
+    conversationId: string,
+    hasSeenMessage: boolean
+  ) => {
     /**
      * push to the conversation page
      */
@@ -35,11 +47,84 @@ const ConversationsWrapper: React.FunctionComponent<
     /**
      * mark as read
      *  */
+    if (hasSeenMessage) return;
+
+    // mark as read mutation
+    try {
+      await markAsRead({
+        variables: {
+          conversationId,
+          userId: session.user.id,
+        },
+        optimisticResponse: {
+          markConversationAsSeen: true,
+        },
+        update: (cache) => {
+          const participantsFragment = cache.readFragment<{
+            Participants: Array<Participant>;
+          }>({
+            id: `Conversation:${conversationId}`,
+            fragment: gql`
+              fragment Participantss on Conversation {
+                Participants {
+                  user {
+                    id
+                    username
+                  }
+                  hasSeen
+                }
+              }
+            `,
+          });
+
+          if (!participantsFragment) return;
+
+          // console.log("participantsFragment", participantsFragment);
+
+          const participants = [...participantsFragment.Participants];
+
+          const userParticipantIdx = participants.findIndex(
+            (p) => p.user.id === session.user.id
+          );
+
+          if (userParticipantIdx === -1) return;
+
+          const userParticipant = participants[userParticipantIdx];
+
+          /**
+           * Update participant to show latest message as read
+           */
+          participants[userParticipantIdx] = {
+            ...userParticipant,
+            hasSeen: true,
+          };
+
+          // console.log("participants", participants);
+
+          /**
+           * Update cache
+           */
+          cache.writeFragment({
+            id: `Conversation:${conversationId}`,
+            fragment: gql`
+              fragment UpdatedParticipant on Conversation {
+                Participants
+              }
+            `,
+            data: {
+              Participants: participants,
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log("mark as read error", error);
+    }
   };
 
   const subscribeToNewConversations = () => {
     conversationsSubscribeToMore({
-      document: Query.Subscriptions.CONVERSATION_CREATED,
+      document: GQL.Subscriptions.CONVERSATION_CREATED,
       updateQuery: (
         prev,
         {

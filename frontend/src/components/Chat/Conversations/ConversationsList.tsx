@@ -23,7 +23,10 @@ interface IConversationsListProps {
   session: Session;
   getConversations?: Array<Conversation>;
   conversationLoading?: boolean;
-  onClickConversation: (conversationId: string) => void;
+  onClickConversation: (
+    conversationId: string,
+    hasSeenMessage: boolean
+  ) => void;
 }
 
 const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
@@ -117,14 +120,23 @@ const ConversationsList: React.FunctionComponent<IConversationsListProps> = ({
         !search &&
         getConversations &&
         getConversations?.length > 0 &&
-        getConversations?.map((conversation) => (
-          <ListItem
-            onClickConversation={onClickConversation}
-            conversation={conversation}
-            key={conversation.id}
-            isSelected={conversationId === conversation.id}
-          />
-        ))}
+        getConversations?.map((conversation) => {
+          const participant = conversation.Participants.find(
+            (p) => p.user.id === session?.user?.id
+          );
+
+          return (
+            <ListItem
+              onClickConversation={() =>
+                onClickConversation(conversation.id, participant?.hasSeen!)
+              }
+              conversation={conversation}
+              key={conversation.id}
+              isSelected={conversationId === conversation.id}
+              hasSeenMessage={participant?.hasSeen!}
+            />
+          );
+        })}
 
       {!conversationLoading &&
         !search &&
