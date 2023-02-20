@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useQuery } from "@apollo/client";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -66,6 +66,12 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ conversationId }) => {
     setAnchorEl(null);
   };
 
+  const participantNames = conversation?.Participants.map(
+    (p) => p.user.username
+  )
+    .sort()
+    .join(", ");
+
   return (
     <>
       <Stack direction="row" m={1} mt={1} alignItems="center" height="60px">
@@ -87,32 +93,40 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ conversationId }) => {
           <AiOutlineArrowLeft color="white" fontSize={20} />
         </Button>
 
-        {/* {loading && <SkeletonLoader count={1} height="30px" width="320px" />}
-      {!conversation && !loading && <Text>Conversation Not Found</Text>} */}
-
         {conversation && (
-          <Stack direction="row" alignItems="center" ml={2}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            ml={2}
+            sx={{
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+          >
             <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
-            <Box ml={1.5}>
-              <Typography
-                sx={{
-                  fontSize: "1.000rem",
-                  fontWeight: "700",
-                  color: "white",
-                }}
-              >
-                {conversation.conversationName}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "0.750rem",
-                  fontWeight: "700",
-                  color: "grey",
-                }}
-              >
-                {conversation.Participants.length} members
-              </Typography>
-            </Box>
+            <Tooltip title={participantNames}>
+              <Box ml={1.5}>
+                <Typography
+                  sx={{
+                    fontSize: "1.000rem",
+                    fontWeight: "700",
+                    color: "white",
+                  }}
+                >
+                  {conversation.conversationName}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.750rem",
+                    fontWeight: "700",
+                    color: "grey",
+                  }}
+                >
+                  {conversation.Participants.length} members
+                </Typography>
+              </Box>
+            </Tooltip>
           </Stack>
         )}
 

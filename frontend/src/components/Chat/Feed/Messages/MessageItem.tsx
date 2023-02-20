@@ -27,6 +27,7 @@ const MessageItem: React.FunctionComponent<IMessageItemProps> = ({
       justifyContent={sentByMe ? "flex-end" : "flex-start"}
       sx={{ width: "100%", ":hover": { backgroundColor: "#424242" } }}
     >
+      {/* name of sender */}
       <Stack
         sx={{
           backgroundColor: sentByMe ? "#3f51b5" : "RGBA(255, 255, 255, 0.16)",
@@ -37,6 +38,18 @@ const MessageItem: React.FunctionComponent<IMessageItemProps> = ({
           margin: "5px 0",
         }}
       >
+        <Typography
+          sx={{
+            color: sentByMe ? "#BDBDBD" : "#fff",
+            fontSize: "10px",
+            alignSelf: "flex-start",
+            fontWeight: "500",
+            margin: "5px 0",
+          }}
+        >
+          {message.sender.username}
+        </Typography>
+
         <Typography
           sx={{
             color: "#fff",

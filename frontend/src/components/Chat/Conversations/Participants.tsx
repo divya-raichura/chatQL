@@ -54,14 +54,15 @@ const Participants: React.FunctionComponent<IParticipantsProps> = ({
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    if (!session)
+      return toast.error("You must be logged in to create a conversation");
+    if (participants.length < 1) return;
+
     try {
       const { data } = await createConversation({
         variables: {
           participantIds: [userId, ...participants.map((p) => p.id)],
-          conversationName:
-            participants.length == 1
-              ? participants[0].username.toString()
-              : conversationName,
+          conversationName,
         },
       });
 

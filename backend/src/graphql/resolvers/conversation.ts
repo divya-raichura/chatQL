@@ -59,8 +59,37 @@ const resolvers = {
         throw new GraphQLError("You must include yourself in the conversation");
       }
 
-      if (!conversationName) {
-        throw new GraphQLError("Conversation name is required");
+      if (participantIds.length === 1) {
+        throw new GraphQLError(
+          "You must include at least one other person in the conversation"
+        );
+      }
+
+      let convoName: string;
+
+      if (conversationName) {
+        convoName = conversationName;
+      } else {
+        try {
+          const participants = await prisma.user.findMany({
+            where: {
+              id: {
+                in: participantIds,
+              },
+            },
+            select: {
+              username: true,
+            },
+          });
+
+          convoName = participants
+            .map((p) => p.username)
+            .sort()
+            .join(", ");
+        } catch (error: any) {
+          console.log("createConversation error", error);
+          throw new GraphQLError("Error creating conversation");
+        }
       }
 
       try {
@@ -75,7 +104,7 @@ const resolvers = {
                 })),
               },
             },
-            conversationName,
+            conversationName: convoName,
           },
 
           include: conversationPopulated,

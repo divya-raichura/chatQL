@@ -10,7 +10,7 @@ const conversationTypeDefs = gql`
   type Mutation {
     createConversation(
       participantIds: [String]!
-      conversationName: String!
+      conversationName: String
     ): createConversationResponse
   }
 
