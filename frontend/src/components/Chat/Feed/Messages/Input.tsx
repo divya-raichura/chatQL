@@ -33,9 +33,9 @@ const Input: React.FunctionComponent<IInputProps> = ({
   const { data: session } = useSession();
 
   const submitHandler = async (e: any) => {
-    if (e.keyCode != 13) {
-      return;
-    }
+    // if (e.keyCode != 13) {
+    // return;
+    // }
     e.preventDefault();
 
     try {
@@ -117,43 +117,70 @@ const Input: React.FunctionComponent<IInputProps> = ({
   };
 
   // input box that sends message on enter and shift enter means new line
+
   return (
-    <Box width="100%" py={5} px={4}>
-      <Paper
-        component="form"
-        onSubmit={submitHandler}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        padding: "0.5rem",
+        margin: "0.5rem 0",
+      }}
+    >
+      <Box
         sx={{
-          backgroundColor: "#1e1e1e",
-          // border color to match the elevation
-          p: "2px 4px",
           display: "flex",
           alignItems: "center",
           width: "100%",
+          padding: "0.5rem",
+          borderRadius: "0.5rem",
         }}
+        mx={5}
       >
-        <TextField
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          sx={{ ml: 1, flex: 1 }}
-          variant="standard"
-          placeholder="Type a message"
-          multiline
-          minRows={1}
-          maxRows={5}
-          InputProps={{
-            disableUnderline: true,
-            sx: {
-              color: "white",
-              fontSize: "16px",
-              fontWeight: "500",
-            },
+        <Paper
+          sx={{
+            backgroundColor: "#1e1e1e",
+            // border color to match the elevation
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
           }}
-        />
-
-        <IconButton type="submit" sx={{ p: "10px" }}>
-          <FiSend color="white" fontSize={20} />
+        >
+          <TextareaAutosize
+            style={{
+              width: "100%",
+              padding: "0.5rem",
+              borderRadius: "0.5rem",
+              // border: "1px solid #ccc",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: "1rem",
+              fontFamily: "inherit",
+              color: "inherit",
+              backgroundColor: "transparent",
+            }}
+            placeholder="Type a message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                submitHandler(e);
+              }
+            }}
+          />
+        </Paper>
+        <IconButton
+          sx={{ padding: "0.5rem" }}
+          onClick={submitHandler}
+          disabled={loading}
+        >
+          <FiSend />
         </IconButton>
-      </Paper>
+      </Box>
     </Box>
   );
 };

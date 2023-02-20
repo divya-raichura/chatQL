@@ -33,7 +33,7 @@ export default function Message({ conversationId, userId }: IMessageProps) {
   });
 
   const subscribeToNewMessages = (conversationId: string) => {
-    subscribeToMore({
+    return subscribeToMore({
       document: GQL.Subscriptions.MESSAGE_SENT,
       variables: {
         conversationId,
@@ -59,18 +59,17 @@ export default function Message({ conversationId, userId }: IMessageProps) {
   };
 
   useEffect(() => {
-    const unsubscribe = () => subscribeToNewMessages(conversationId);
+    const unsubscribe = subscribeToNewMessages(conversationId);
 
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, [conversationId]);
 
   useEffect(() => {
+    if (!dummy.current || !data) return;
     if (dummy.current) {
       dummy.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [data]);
+  }, [data, dummy.current]);
 
   if (error) {
     return null;

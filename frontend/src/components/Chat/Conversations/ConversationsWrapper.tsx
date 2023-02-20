@@ -10,6 +10,7 @@ import {
 } from "../../../util/types";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 
 interface IConversationsWrapperProps {
   session: Session;
@@ -65,7 +66,7 @@ const ConversationsWrapper: React.FunctionComponent<
           }>({
             id: `Conversation:${conversationId}`,
             fragment: gql`
-              fragment Participantss on Conversation {
+              fragment Participants on Conversation {
                 Participants {
                   user {
                     id
@@ -123,7 +124,7 @@ const ConversationsWrapper: React.FunctionComponent<
   };
 
   const subscribeToNewConversations = () => {
-    conversationsSubscribeToMore({
+    return conversationsSubscribeToMore({
       document: GQL.Subscriptions.CONVERSATION_CREATED,
       updateQuery: (
         prev,
@@ -141,7 +142,9 @@ const ConversationsWrapper: React.FunctionComponent<
   };
 
   useEffect(() => {
-    subscribeToNewConversations();
+    const unsubscribe = subscribeToNewConversations();
+
+    return () => unsubscribe();
   }, []);
 
   // if (conversationsLoading) {
@@ -158,6 +161,11 @@ const ConversationsWrapper: React.FunctionComponent<
   //     </Box>
   //   );
   // }
+
+  if (conversationsError) {
+    toast.error("There was an error fetching conversations");
+    return null;
+  }
 
   return (
     <Box

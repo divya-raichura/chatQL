@@ -75,9 +75,9 @@ const MessagesHeader: React.FC<MessagesHeaderProps> = ({ conversationId }) => {
   return (
     <>
       <Stack
-        sx={{
-          backgroundColor: "#404040",
-        }}
+        // sx={{
+        //   backgroundColor: "#404040",
+        // }}
         borderRadius={3}
         direction="row"
         m={1}
