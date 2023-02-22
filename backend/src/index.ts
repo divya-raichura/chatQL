@@ -123,9 +123,11 @@ const main = async () => {
 
   // Modified server startup
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
+    httpServer.listen({ port: `${process.env.PORT}` }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:4000/`);
+  console.log(
+    `🚀 Server ready at https://chatql-production.up.railway.app/:${process.env.PORT}/`
+  );
 };
 
 main().catch((error) => {
