@@ -4,8 +4,11 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { getSession } from "next-auth/react";
 
+const url = "https://chatql.onrender.com";
+const wsUrl = "wss://chatql.onrender.com/";
+
 const httpLink = new HttpLink({
-  uri: `https://chatql-production.up.railway.app`,
+  uri: `${url}/graphql}`,
   credentials: "include",
 });
 
@@ -13,7 +16,7 @@ const wsLink =
   typeof window !== "undefined"
     ? new GraphQLWsLink(
         createClient({
-          url: "wss://chatql-production.up.railway.app/graphql/subscriptions",
+          url: `${wsUrl}/graphql/subscriptions`,
           connectionParams: async () => ({
             session: await getSession(),
           }),
