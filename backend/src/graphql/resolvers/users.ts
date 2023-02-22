@@ -1,4 +1,4 @@
-import { CreateUsernameResponse, GraphQLContext } from "../../util/types";
+import { CreateUsernameResponse, GraphQLContext } from "../../util/types.js";
 import { GraphQLError } from "graphql";
 import { User } from "@prisma/client";
 

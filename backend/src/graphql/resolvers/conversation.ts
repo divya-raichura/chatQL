@@ -2,7 +2,7 @@ import {
   ConversationPopulated,
   GraphQLContext,
   ConversationCreatedSubscriptionPayload,
-} from "../../util/types";
+} from "../../util/types.js";
 import { GraphQLError } from "graphql";
 import { Prisma } from "@prisma/client";
 import { withFilter } from "graphql-subscriptions";

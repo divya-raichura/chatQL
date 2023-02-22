@@ -5,9 +5,9 @@ import {
   GraphQLContext,
   MessagePopulated,
   SendMessageArgs,
-} from "../../util/types";
-import { conversationPopulated } from "./conversation";
-import { MessageSubscriptionPayload } from "../../util/types";
+} from "../../util/types.js";
+import { conversationPopulated } from "./conversation.js";
+import { MessageSubscriptionPayload } from "../../util/types.js";
 
 const resolvers = {
   Query: {
