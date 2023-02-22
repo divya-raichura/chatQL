@@ -5,7 +5,7 @@ import { createClient } from "graphql-ws";
 import { getSession } from "next-auth/react";
 
 const httpLink = new HttpLink({
-  uri: `https://chatql-production.up.railway.app/`,
+  uri: `https://chatql-production.up.railway.app`,
   credentials: "include",
 });
 
