@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "postinstall": "prisma generate --schema=./src/prisma/schema.prisma",
+    "migrate": "prisma db push --schema=./src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
