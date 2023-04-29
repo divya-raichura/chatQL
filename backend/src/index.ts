@@ -121,11 +121,15 @@ const main = async () => {
     })
   );
 
+  const PORT = process.env.PORT || 4000;
+  // backend url
+  const SERVER = process.env.SERVER || "http://localhost";
+
   // Modified server startup
   await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
+    httpServer.listen({ port: PORT }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:4000/`);
+  console.log(`🚀 Server ready at ${SERVER}:${PORT}/`);
 };
 
 main().catch((error) => {
