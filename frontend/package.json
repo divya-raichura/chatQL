@@ -4,16 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma generate --schema=./src/prisma/schema.prisma && next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate:dev": "npx dotenv -e .env.local -- prisma migrate dev",
-    "db:push": "npx dotenv -e .env.local -- prisma db push",
-    "migrate:reset": "npx dotenv -e .env.local -- prisma migrate reset",
-    "db:seed": "npx dotenv -e .env.local -- prisma db seed",
-    "prisma:generate": "npx dotenv -e .env.local -- prisma generate --schema=./src/prisma/schema.prisma",
-    "prisma:studio": "npx dotenv -e .env.local -- prisma studio",
-    "production:build": "npx prisma generate && npx prisma migrate deploy && next build"
+    "prisma:generate": "npx dotenv -e .env.local -- prisma generate --schema=./src/prisma/schema.prisma"
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",
@@ -35,6 +29,7 @@
     "graphql-ws": "^5.11.3",
     "next": "13.1.6",
     "next-auth": "^4.19.0",
+    "prisma": "^4.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
@@ -42,7 +37,6 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
-    "dotenv-cli": "^7.0.0",
-    "prisma": "^4.9.0"
+    "dotenv-cli": "^7.0.0"
   }
 }
