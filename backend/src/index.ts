@@ -113,6 +113,9 @@ const main = async () => {
         // means we return a promise that resolves to a GraphQLContext, so context always has a session as we defined in types.ts(GraphQLContexts)
         // what we return from here will be available in context in resolvers
         const session = (await getSession({ req })) as Session;
+        console.log("REQUEST", req);
+        console.log("SESSION", session);
+        console.log("SESSION", await getSession({ req }));
         // now though we added new properties to session in the next-auth frontend and it will be recieved by
         // this session object, but typescript will not know about it, so we need to add a custom type for it
         // hence we made a new interface called Session in types.ts and we will use it here by typecasting
