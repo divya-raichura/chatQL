@@ -164,6 +164,7 @@ const ConversationsWrapper: React.FunctionComponent<
 
   if (conversationsError) {
     toast.error("There was an error fetching conversations");
+    console.log(conversationsError);
     return null;
   }
 
