@@ -8,7 +8,7 @@ import { getSession } from "next-auth/react";
 const DOMAIN = process.env.DOMAIN || "localhost:4000";
 
 const httpLink = new HttpLink({
-  uri: `http://chatql-production.up.railway.app/graphql`,
+  uri: `https://chatql-production.up.railway.app/graphql`,
   credentials: "include",
 });
 
@@ -16,7 +16,7 @@ const wsLink =
   typeof window !== "undefined"
     ? new GraphQLWsLink(
         createClient({
-          url: `ws://chatql-production.up.railway.app/graphql/subscriptions`,
+          url: `wss://chatql-production.up.railway.app/graphql/subscriptions`,
           connectionParams: async () => ({
             session: await getSession(),
           }),
