@@ -5,10 +5,13 @@ import { createClient } from "graphql-ws";
 import { getSession } from "next-auth/react";
 
 // backend url
-const DOMAIN = process.env.DOMAIN || "localhost:4000";
+const DOMAIN = "https://chatql-production.up.railway.app/graphql";
+const WSS = "wss://chatql-production.up.railway.app/graphql/subscriptions";
+const LOCALHOST_DOMAIN = "http://localhost:4000/graphql";
+const LOCALHOST_WSS = "ws://localhost:4000/graphql/subscriptions";
 
 const httpLink = new HttpLink({
-  uri: `https://chatql-production.up.railway.app/graphql`,
+  uri: DOMAIN,
   credentials: "include",
 });
 
@@ -16,7 +19,7 @@ const wsLink =
   typeof window !== "undefined"
     ? new GraphQLWsLink(
         createClient({
-          url: `wss://chatql-production.up.railway.app/graphql/subscriptions`,
+          url: WSS,
           connectionParams: async () => ({
             session: await getSession(),
           }),

@@ -18,6 +18,13 @@ import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
 
 const main = async () => {
+  const PORT = process.env.PORT || 4000;
+  // backend url
+  const SERVER = process.env.SERVER || "http://localhost";
+
+  // client url
+  const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:3000";
+
   dotenv.config();
 
   const schema = makeExecutableSchema({
@@ -30,6 +37,12 @@ const main = async () => {
   // Below, we tell Apollo Server to "drain" this httpServer,
   // enabling our servers to shut down gracefully.
   const httpServer = http.createServer(app);
+
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", CLIENT_ORIGIN);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    next();
+  });
 
   // Creating the WebSocket server
   const wsServer = new WebSocketServer({
@@ -113,9 +126,10 @@ const main = async () => {
         // means we return a promise that resolves to a GraphQLContext, so context always has a session as we defined in types.ts(GraphQLContexts)
         // what we return from here will be available in context in resolvers
         const session = (await getSession({ req })) as Session;
-        console.log("REQUEST", req);
         console.log("SESSION", session);
-        console.log("SESSION", await getSession({ req }));
+        // console.log("REQUEST", req);
+        // console.log("SESSION", session);
+        // console.log("SESSION", await getSession({ req }));
         // now though we added new properties to session in the next-auth frontend and it will be recieved by
         // this session object, but typescript will not know about it, so we need to add a custom type for it
         // hence we made a new interface called Session in types.ts and we will use it here by typecasting
@@ -123,10 +137,6 @@ const main = async () => {
       },
     })
   );
-
-  const PORT = process.env.PORT || 4000;
-  // backend url
-  const SERVER = process.env.SERVER || "http://localhost";
 
   // Modified server startup
   await new Promise<void>((resolve) =>
