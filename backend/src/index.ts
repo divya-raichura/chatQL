@@ -16,7 +16,6 @@ import { GraphQLContext, Session, SubscriptionContext } from "./util/types";
 import { PrismaClient } from "@prisma/client";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { WebSocketServer } from "ws";
-import "node-fetch";
 
 const main = async () => {
   const PORT = process.env.PORT || 4000;
