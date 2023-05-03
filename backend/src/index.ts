@@ -56,6 +56,7 @@ const main = async () => {
   // Context parameters
   const prisma = new PrismaClient();
   const pubsub = new PubSub();
+  let sesssion_lelo: any;
 
   const getSubscriptionContext = async (
     ctx: SubscriptionContext
@@ -64,6 +65,7 @@ const main = async () => {
     // ctx is the graphql-ws Context where connectionParams live
     if (ctx.connectionParams && ctx.connectionParams.session) {
       const { session } = ctx.connectionParams;
+      sesssion_lelo = session;
       return { session, prisma, pubsub };
     }
     // Otherwise let our resolvers know we don't have a current user
@@ -125,8 +127,12 @@ const main = async () => {
       context: async ({ req }): Promise<GraphQLContext> => {
         // means we return a promise that resolves to a GraphQLContext, so context always has a session as we defined in types.ts(GraphQLContexts)
         // what we return from here will be available in context in resolvers
-        const session = (await getSession({ req })) as Session;
+        let session = (await getSession({ req })) as Session;
         console.log("SESSION", session);
+        console.log("session lelo", sesssion_lelo);
+        if (!session) {
+          session = sesssion_lelo;
+        }
         // console.log("REQUEST", req);
         // console.log("SESSION", session);
         // console.log("SESSION", await getSession({ req }));
